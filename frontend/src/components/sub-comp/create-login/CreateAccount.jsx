@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useContext, useState } from 'react';
+import { createRef, useContext, useState } from 'react';
 import{ Link, useNavigate } from 'react-router-dom';
 import url from './../../utils/url';
 import { UseKeyHook } from '../../../App';
@@ -13,6 +13,85 @@ export default function CreateAccount() {
     const [alert, alertstatus] = useState(false);
     const nav = useNavigate()
     const KeyContext = useContext(UseKeyHook)
+
+    //create ref
+    const username = createRef();
+    const email = createRef();
+    const password = createRef();
+    const conpass = createRef();
+
+    const createaccount = async () => {
+        const usernameValue = username.current.value;
+        const emailValue = email.current.value;
+        const passwordValue = password.current.value;
+        const conpassValue = conpass.current.value;
+        if(checkValidity(usernameValue, emailValue, passwordValue, conpassValue)){
+            return;
+        }
+        await sendData(usernameValue, emailValue, passwordValue, conpassValue)
+        return;
+    }
+
+    const checkValidity = (usernameValue, emailValue, passwordValue, conpassValue) => {
+        if (usernameValue === '' || emailValue === '' || passwordValue === '' || conpassValue === ''){
+            alert('All needed fields not filled.', alertstatus);
+            return true;
+        }else if (passwordValue !== conpassValue) {
+            alert('Passwords must match.', alertstatus);
+            return true;
+        };  
+    }
+
+    const sendData = async (usernameValue, emailValue, passwordValue, conpassValue) => {
+        let response = await (await fetch(`${url()}/dj-rest-auth/registration/`, { 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                username: usernameValue,
+                password1: passwordValue,
+                password2: conpassValue,
+                email: emailValue,
+            })
+        })).json();
+        checkResponse(response)
+        
+    }
+
+    const checkResponse = (response) => {
+        let msg;
+        switch (response) {
+            case response.message:
+                msg = String(response.message).replace(/,/gi,'<br/>');
+                alert(msg);
+                break;
+            case response.email:
+                msg = String(response.email).replace(/,/gi,'<br/>');
+                alert(msg);
+                break;
+            case response.password1:
+                msg = String(response.password1).replace(/,/gi,'<br/>');
+                alert(msg);
+                break;
+            case response.non_field_errors:
+                msg = String(response.non_field_errors).replace(/,/gi,'<br/>');
+                alert(msg);
+                break;
+            case response.username:
+                msg = String(response.username).replace(/,/gi,'<br/>');
+                alert(msg);
+                break;
+            case response.key:
+                window.localStorage.setItem('key', response.key);
+                KeyContext(response.key)
+                return nav("/storage");
+            default:
+                alert('Something went wrong, make sure your information is valid, and try again later.')
+                break;
+        }
+    }
+
     return(
         <form>
             
@@ -20,25 +99,25 @@ export default function CreateAccount() {
             {/* user name */}
             <div className="form-group">
                 <label htmlFor="username">User Name</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" id="username" placeholder="User Name"/>
+                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" ref={username} placeholder="User Name"/>
             </div>
 
             {/* email */}
             <div className="form-group">
                 <label htmlFor="email">Email Address</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="email" className="form-control" id="email" placeholder="Enter email"/>
+                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="email" className="form-control" ref={email} placeholder="Enter email"/>
             </div>
 
             {/* password */}
             <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" id="password" placeholder="Password"/>
+                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={password} placeholder="Password"/>
             </div>
 
             {/* confirm password */}
             <div className="form-group"> 
                 <label htmlFor="confirm password">Confirm Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" id="confirmpassword" placeholder="Confirm Password"/>
+                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={conpass} placeholder="Confirm Password"/>
                 <small className="form-text text-muted">Passwords <strong>must</strong> match</small>
             </div>
 
@@ -48,7 +127,7 @@ export default function CreateAccount() {
                 className="btn btn-danger mt-3 align-self-center" 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => {createaccount(alertstatus, nav, KeyContext)}}>
+                onClick={() => {createaccount()}}>
                     Create account
                 </motion.button>
 
@@ -65,63 +144,4 @@ export default function CreateAccount() {
         </form>
         
     );
-};
-
-async function createaccount(changefunc, nav, KeyContext) {
-    let name = document.getElementById('username').value;
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-    let conpass = document.getElementById('confirmpassword').value;
-    // check value of passwords
-    if (password === '' || name === ''){
-        alert('All needed fields not filled.', changefunc);
-        return;
-    }else if (password !== conpass) {
-        alert('Passwords must match.', changefunc);
-        return;
-    };  
-    let response = await (await fetch(`${url()}/dj-rest-auth/registration/`, { 
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({
-            username: name,
-            password1: password,
-            password2: conpass,
-            email: email,
-            
-
-        })
-    })).json();
-    if (response.message){
-        alert(response.message, changefunc);
-        return;
-    } if(response.email){
-        let msg = String(response.email).replace(/,/gi,'<br/>');
-        alert(msg, changefunc);
-        return;
-    } if (response.password1){
-        let msg = String(response.password1).replace(/,/gi,'<br/>');
-        alert(msg, changefunc);
-        return;
-    } if (response.non_field_errors){
-        let msg = String(response.non_field_errors).replace(/,/gi,'<br/>');
-        alert(msg, changefunc);
-        return;
-    } if (response.username){
-        let msg = String(response.username).replace(/,/gi,'<br/>');
-        alert(msg, changefunc);
-        return;
-    } if(response.key){
-        window.localStorage.setItem('key', response.key);
-        KeyContext(response.key)
-        return nav("/storage"); 
-    }
-    
-};
-
-function alert(text, changefunc){
-    document.getElementById('probalert').innerHTML = text;
-    changefunc(true);
 };
