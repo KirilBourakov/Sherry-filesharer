@@ -1,4 +1,4 @@
-import json, os
+import json, os, io
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.db.models import Q
@@ -40,25 +40,25 @@ class UserIsLogedIn(APIView):
     
 class Upload(APIView):
     def post(self, request):
-        file = ContentFile(request.body, 'temp.pdf')
+        file = ContentFile(request.body, 'a') #the a is a temp file name until I can find out how to get the filename 
         f = File.objects.create(owner=request.user, tags='', file=file)    
         f.save()
-        print(str(f.file).split('/')[len(str(f.file).split('/')) - 1])
-        response = {'status': True, 'pk': f.pk, 'oldfilename': str(f.file).split('/')[len(str(f.file).split('/')) - 1]}   
+        # print(str(f.file).split('/')[len(str(f.file).split('/')) - 1])
+        response = {'status': True, 'pk': f.pk} # 'pk': f.pk, 'oldfilename': str(f.file).split('/')[len(str(f.file).split('/')) - 1]}   
         return Response(response)  
 
 class checkFileExistance(APIView):
     def put(self, request):
         data = json.loads(request.body)
-        if data['oldfilename'] == data['filename']:
-            response = {'exists': False}
+        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
+            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
             return Response(response)
         try:
             f = File.objects.get(file__contains=data['filename'], owner=request.user)
-            response = {'exists': True}
+            response = {'status': 'exists'}
             return Response(response)
         except File.DoesNotExist:
-            response = {'exists': False}
+            response = {'status': 'none'}
             return Response(response)
 
 class DeleteTemp(APIView):

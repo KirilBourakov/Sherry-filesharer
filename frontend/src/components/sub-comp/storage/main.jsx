@@ -7,6 +7,10 @@ import Search from '../multi/search';
 export default function Main(){
     const [update, forceupdate] = useState(0);
     const [search, changesearch ]= useState('|<>|');
+    const updateView = () => {
+        forceupdate(update + 1)
+        return
+    }
     return(
         <motion.div
         initial={{ opacity:0 }}
@@ -20,7 +24,7 @@ export default function Main(){
                     <Files update={update} params={search}/>
                 </div>
                 <div className="row mt-3">
-                    <Upload forceupdate={forceupdate} update={update}/>
+                    <Upload update={updateView}/>
                 </div>
             </div>
         </motion.div>
