@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form'
 import { motion } from 'framer-motion'
 import url from './../../utils/url';
-import { useState } from 'react';
+import { createRef, useState } from 'react';
 
 const variants = {
     HoverSubmitFile:{
@@ -32,21 +32,31 @@ const variants = {
 export default function Upload(props){
     const [errorview, changeerrorview] = useState(false);
     const [successview, changesuccessview] = useState(false);
+    const fileRef = createRef();
+    const tagRef = createRef();
 
     const uploadFile = async (e) => {
-        if (await checkFormData()){
+        const file = fileRef.current
+        const tags = tagRef.current
+        if (await checkFormData(file)){
             if (!window.confirm('This file apears to exist. If you continue, it will be overwritten')){
-                return false;
+                file.value = ''
+                tags.value = ''
+                return;
             }
         }
-        await sendFileData();
-        await sendFormData();
-        props.updateView()
+        const response = await sendFileData(file);
+        const confirm = await sendFormData(tags, response, file);
+        alert(confirm)
+        file.value = ''
+        tags.value = ''
+        props.update()
         return
     }
 
-    const checkFormData = async () => {
-        const filename = document.getElementById('upload').files[0].name
+    //Check validity of formData
+    const checkFormData = async (file) => {
+        const filename = file.files[0].name
         let response = await(await fetch(`${url()}/api/checkFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
@@ -56,41 +66,63 @@ export default function Upload(props){
                 filename: filename,
             })
         })).json();
-        return response.exists
+        if (response.exists === true) {
+            return true
+        } else if (response.status !== 'clear'){
+            window.alert('Please make sure the file is a pdf')
+        }
+        return false
     }
 
-    const sendFileData = async () => {
-        let key = window.localStorage.getItem('key'); 
+    // send raw file bytes
+    const sendFileData = async (file) => {
         let formData = new FormData(); //make form
-        var input = document.getElementById('upload').files[0]; //get file
-        formData.append('file', input, input.name); //attach file to form
+        formData.append('file', file.files[0], file.files[0].name); //attach file to form
         let response = await(await fetch(`${url()}/api/sendFileData`, {
             headers: {
-                "Authorization": `Token ${key}`,
+                "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
             method: 'POST',
             body: formData
         })).json();
-       
+       return response
     }
 
-    const sendFormData = async () => {
-        let tags = document.getElementById('tags').value;
+    // send tags and filename
+    const sendFormData = async (tags, oldFileData, file) => {
+        
+        let tagsValue = tags.value;
         let response = await(await fetch(`${url()}/api/sendFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
             method: 'POST',
             body: JSON.stringify({
+                tags: tagsValue,
+                filename: file.files[0].name,
+                pk: oldFileData.pk,
+                TempName: oldFileData.temp_name
             })
         })).json();
-        return
+        alert(response.msg)
+        return response.status
     }
 
+    // alert user about upload status
+    const alert = (success) => {
+        if (success) {
+            changesuccessview(true);
+            setTimeout(() => { changesuccessview(false); }, 5000);
+            return
+        }
+        changeerrorview(true);
+        setTimeout(() => { changeerrorview(false); }, 5000);
+        return
+    } 
 
     return(
         <div className='d-flex flex-column'>
-            <form id="form" enctype="multipart/form-data">
+            <Form>
                 <Form.Group className="mb-3">
                     <Form.Label>Upload</Form.Label>
                     <motion.div
@@ -98,7 +130,7 @@ export default function Upload(props){
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                    <Form.Control type="file" size="lg" id="upload" name="static_file"/>
+                    <Form.Control type="file" size="lg" ref={fileRef}/>
                     </motion.div>
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -108,11 +140,11 @@ export default function Upload(props){
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                        <Form.Control type="text" size="lg" id="tags"/>
+                        <Form.Control type="text" size="lg" ref={tagRef} />
                     </motion.div>
                 </Form.Group>
                 <motion.button 
-                type='submit'
+                type='button'
                 className='btn btn-danger'
                 variants={variants}
                 whileHover='HoverSubmitFile'
@@ -120,7 +152,7 @@ export default function Upload(props){
                 >
                 Upload
                 </motion.button>
-            </form>
+            </Form>
 
             <div className='abs'>
                 <motion.div 
@@ -143,119 +175,3 @@ export default function Upload(props){
         </div>
     );
 };
-
-// async function uploadfile(changefunc, changefunc2, forceupdate, update) {
-//     let key = window.localStorage.getItem('key'); 
-//     let formData = new FormData(); //make form
-//     var input = document.getElementById('upload').files[0]; //get file
-//     formData.append('file', input, input.name); //attach file to form
-
-
-    
-//      //send file
-
-
-//     // 
-
-
-//     // try {
-//     //     var input = document.getElementById('upload').files[0];
-//     //     formData.append('file', input, input.name);
-//     //     let check = input.name;
-//     // } catch (error) {
-//     //     makeerror(changefunc);
-//     //     return;
-//     // };
-//     if (response.status === true) {
-//         //renamefile(input.name, response.pk, response.oldfilename, changefunc, changefunc2, forceupdate, update);
-//         return;
-//     } else{
-//         makeerror(changefunc)
-//     };
-    
-// };
-
-// async function renamefile(filename, pk, oldfilename, changefunc, changefunc2, forceupdate, update) {
-//     if (await checkoverlap(filename, oldfilename)){
-//         return;
-//     }
-//     let tags = document.getElementById('tags').value;
-//     let response = await(await fetch(`${url()}/api/rename`, {
-//         headers: {
-//             "Authorization": `Token ${window.localStorage.getItem('key')}`,
-//         },
-//         method: 'POST',
-//         body: JSON.stringify({
-//             filename: filename,
-//             tags: tags,
-//             pk: pk,
-//             oldfilename: oldfilename
-//         })
-//     })).json();
-
-//     if (response.status === true) {
-//         if (response.msg === true){
-//             sucess(changefunc2, forceupdate, update)
-//         } else{
-//             sucess(changefunc2, forceupdate, update, response.msg)
-//         }
-        
-//         return;
-//     } else{
-//         makeerror(changefunc, response.status);
-//     };
-
-//     return;
-// };
-
-// async function checkoverlap(filename, oldfilename) {
-//     let response = await(await fetch(`${url()}/api/checkFileExistance`, {
-//         headers: {
-//             "Authorization": `Token ${window.localStorage.getItem('key')}`,
-//         },
-//         method: 'PUT',
-//         body: JSON.stringify({
-//             filename: filename,
-//             oldfilename: oldfilename
-//         })
-//     })).json();
-//     if (response.exists === true){
-//         if(window.confirm('This file apears to exist. If you continue, it will be overwritten')){
-//             return false;
-//         } else{
-//             await(await fetch(`${url()}/api/DeleteTemp`, {
-//                 headers: {
-//                     "Authorization": `Token ${window.localStorage.getItem('key')}`,
-//                 },
-//                 method: 'POST',
-//                 body: JSON.stringify({
-//                     oldfilename: oldfilename
-//                 })
-//             })).json();
-//             return true;
-//         }
-//     }
-//     return false
-// }
-
-// function makeerror(changefunc, msg='Sorry, something went wrong. Please try again later, and make sure the file field is not empty.') {
-//     document.getElementById('error').innerHTML = msg
-//     changefunc(true);
-//     setTimeout(() => {  changefunc(false); }, 5000);
-//     return;   
-// };
-
-// function sucess(changefunc, forceupdate, update, msg="File uploaded successfully.") {
-//     document.getElementById('sucess').innerHTML = msg
-//     changefunc(true);
-//     forceupdate(update+1);
-//     clear();
-//     setTimeout(() => { changefunc(false); }, 5000);
-//     return;   
-// };
-
-// function clear() {
-//     document.getElementById('upload').value = '';
-//     document.getElementById('tags').value = '';
-//     return;
-// };

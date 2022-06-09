@@ -195,35 +195,33 @@ class DeleteFile(APIView):
 class CheckFormData(APIView):
     def put(self, request):
         data = json.loads(request.body)
+        
+        #check that file is a pdf
         if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
             response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
             return Response(response)
+        
+        #check if file exists
         try:
             f = File.objects.get(file__contains=data['filename'], owner=request.user)
-            response = {'status': 'exists'}
+            response = {'exists': True}
             return Response(response)
         except File.DoesNotExist:
-            response = {'status': 'none'}
+            response = {'status': 'clear'}
             return Response(response)
 
 class SendFileData(APIView):
     def post(self, request):
-        file = ContentFile(request.body, 'a') #the a is a temp file name until I can find out how to get the filename 
+        file = ContentFile(request.body, 'temp.pdf') #the a is a temp file name until I can find out how to get the filename 
         f = File.objects.create(owner=request.user, tags='', file=file)    
         f.save()
-        # print(str(f.file).split('/')[len(str(f.file).split('/')) - 1])
-        response = {'status': True, 'pk': f.pk} # 'pk': f.pk, 'oldfilename': str(f.file).split('/')[len(str(f.file).split('/')) - 1]}   
+        temp_name = str(f.file).split('/')[len(str(f.file).split('/')) - 1]
+        response = {'status': True, 'temp_name': temp_name, 'pk': f.pk}
         return Response(response)  
 
 class SendFormData(APIView):
     def post(self, request):
         data = json.loads(request.body)
-        
-        #check if file is valid
-        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
-            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
-            return Response(response)
-        
         # get model
         model = File.objects.get(pk=data['pk'], owner=request.user)
         model.tags = data['tags'] 

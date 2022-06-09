@@ -28,10 +28,3 @@ urlpatterns = [
     path('sendFileData', views.SendFileData.as_view(), name='sendFileData'), #
     path('sendFormData', views.SendFormData.as_view(), name='sendFormData'), #
 ]
-
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {
-            'document_root': settings.MEDIA_ROOT,
-        }),
-    ]

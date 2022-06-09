@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export default function Files(props){
     const [key, changekey] = useState(window.localStorage.getItem('key'));
-    const [data, setdata] = useState([]);
+    const [data, setdata] = useState(false);
     
     useEffect((accesskey=key, parm=props.params) => {
         const fetchFiles = () => {
