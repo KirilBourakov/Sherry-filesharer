@@ -10,21 +10,23 @@ const variants = {
 };
 
 export default function CreateAccount() {
-    const [alert, alertstatus] = useState(false);
+    const [alertShow, changeAlertShow] = useState(false);
+    const [alertText, changeAlertText] = useState('');
     const nav = useNavigate()
     const KeyContext = useContext(UseKeyHook)
 
     //create ref
-    const username = createRef();
-    const email = createRef();
-    const password = createRef();
-    const conpass = createRef();
+    const usernameRef = createRef();
+    const emailRef = createRef();
+    const passwordRef = createRef();
+    const conpassRef = createRef();
 
     const createaccount = async () => {
-        const usernameValue = username.current.value;
-        const emailValue = email.current.value;
-        const passwordValue = password.current.value;
-        const conpassValue = conpass.current.value;
+        const usernameValue = usernameRef.current.value;
+        const emailValue = emailRef.current.value;
+        const passwordValue = passwordRef.current.value;
+        const conpassValue = conpassRef.current.value;
+        
         if(checkValidity(usernameValue, emailValue, passwordValue, conpassValue)){
             return;
         }
@@ -34,10 +36,10 @@ export default function CreateAccount() {
 
     const checkValidity = (usernameValue, emailValue, passwordValue, conpassValue) => {
         if (usernameValue === '' || emailValue === '' || passwordValue === '' || conpassValue === ''){
-            alert('All needed fields not filled.', alertstatus);
+            alert('All needed fields not filled.');
             return true;
         }else if (passwordValue !== conpassValue) {
-            alert('Passwords must match.', alertstatus);
+            alert('Passwords must match.');
             return true;
         };  
     }
@@ -55,42 +57,31 @@ export default function CreateAccount() {
                 email: emailValue,
             })
         })).json();
-        checkResponse(response)
-        
+        return checkResponse(response)
     }
 
     const checkResponse = (response) => {
-        let msg;
-        switch (response) {
-            case response.message:
-                msg = String(response.message).replace(/,/gi,'<br/>');
-                alert(msg);
-                break;
-            case response.email:
-                msg = String(response.email).replace(/,/gi,'<br/>');
-                alert(msg);
-                break;
-            case response.password1:
-                msg = String(response.password1).replace(/,/gi,'<br/>');
-                alert(msg);
-                break;
-            case response.non_field_errors:
-                msg = String(response.non_field_errors).replace(/,/gi,'<br/>');
-                alert(msg);
-                break;
-            case response.username:
-                msg = String(response.username).replace(/,/gi,'<br/>');
-                alert(msg);
-                break;
-            case response.key:
-                window.localStorage.setItem('key', response.key);
-                KeyContext(response.key)
-                return nav("/storage");
-            default:
-                alert('Something went wrong, make sure your information is valid, and try again later.')
-                break;
+        console.log(response);
+        if (response.key){
+            window.localStorage.setItem('key', response.key);
+            KeyContext(response.key)
+            return nav("/storage");
         }
+        
+        for (const prop in response) {
+            if (Object.prototype.hasOwnProperty.call(response, prop)) {
+                alert(response[prop]);
+                return
+            }
+        }
+        alert('Something went wrong, make sure your information is valid, and try again later.')
+        return
     }
+ 
+    const alert = (text) => {
+        changeAlertText(text);
+        changeAlertShow(true);
+    };
 
     return(
         <form>
@@ -99,25 +90,26 @@ export default function CreateAccount() {
             {/* user name */}
             <div className="form-group">
                 <label htmlFor="username">User Name</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" ref={username} placeholder="User Name"/>
+                <input autoComplete='off' type="text" className="form-control" ref={usernameRef} placeholder="User Name"/>
+                
             </div>
 
             {/* email */}
             <div className="form-group">
                 <label htmlFor="email">Email Address</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="email" className="form-control" ref={email} placeholder="Enter email"/>
+                <input autoComplete='off' type="email" className="form-control" ref={emailRef} placeholder="Enter email"/>
             </div>
 
             {/* password */}
             <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={password} placeholder="Password"/>
+                <input autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
             </div>
 
             {/* confirm password */}
             <div className="form-group"> 
                 <label htmlFor="confirm password">Confirm Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={conpass} placeholder="Confirm Password"/>
+                <input autoComplete='off' type="password" className="form-control" ref={conpassRef} placeholder="Confirm Password"/>
                 <small className="form-text text-muted">Passwords <strong>must</strong> match</small>
             </div>
 
@@ -135,11 +127,11 @@ export default function CreateAccount() {
             </div>    
 
             <motion.div 
-            animate={alert ? "open" : "closed"}
+            animate={alertShow ? "open" : "closed"}
             variants={variants}
             id="probalert"
             className="alert alert-danger mt-4" role="alert">
-                
+                {alertText}
             </motion.div>
         </form>
         

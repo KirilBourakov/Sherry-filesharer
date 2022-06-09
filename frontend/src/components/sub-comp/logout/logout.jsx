@@ -56,8 +56,3 @@ export default function Logout(){
         </div>
     );
 };
-
-async function logout(ChangeKey, nav){
-        
-    
-};
