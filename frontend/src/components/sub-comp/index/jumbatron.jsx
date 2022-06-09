@@ -18,11 +18,8 @@ export default function Jumbatron() {
                     transition={{ ease: "easeOut", duration: 1 }} 
                     className="display-1 align-self-center cursor-nochange p-6 m-6"
                     >
-                    Sharry
+                    Sharry: pdf file sharer
                     </motion.h1>
-                </div>
-                <div className='backtext p-2 mb-3'>
-                    <p className="display-6 cursor-nochange mx-auto m-0 p-2">PDF sharing and storage. Simple as a cherry.</p>
                 </div>
                 <Link to={'/storage'}>
                 <motion.button 
