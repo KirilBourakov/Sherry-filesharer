@@ -8,8 +8,6 @@ from . import views
 urlpatterns = [ 
     path('sendmail', views.Sendmail, name='sendmail'),
     path('logedincheck', views.UserIsLogedIn.as_view(), name='LogedinCheck'),
-    path('upload', views.Upload.as_view(), name='Upload'),
-    path('rename', views.Rename.as_view(), name='rename'),
     path('getfiles/<str:param>', views.Getfiles.as_view(), name='getfiles'),
     path('getpublicfiles/<str:param>', views.Getpublicfiles.as_view(), name='getpublicfiles'),
     path('sharedwithme/<str:param>', views.Sharedwithme.as_view(), name='sharedwithme'),
@@ -22,8 +20,13 @@ urlpatterns = [
     path('addUser/<int:id>', views.AddUser.as_view(), name="addUser"),
     path('getUser', views.GetUser.as_view(), name='getUser'),
     path('deleteFile/<int:id>', views.DeleteFile.as_view(), name='deleteFile'),
-    path('checkFileExistance', views.checkFileExistance.as_view(), name="checkFileExistance"),
-    path('DeleteTemp', views.DeleteTemp.as_view(), name='DeleteTemp')
+    
+    path('DeleteTemp', views.DeleteTemp.as_view(), name='DeleteTemp'),
+    
+    # file upload
+    path('checkFormData', views.CheckFormData.as_view(), name="checkFormData"),
+    path('sendFileData', views.SendFileData.as_view(), name='sendFileData'), #
+    path('sendFormData', views.SendFormData.as_view(), name='sendFormData'), #
 ]
 
 if settings.DEBUG:

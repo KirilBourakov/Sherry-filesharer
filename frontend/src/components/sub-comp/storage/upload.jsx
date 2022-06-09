@@ -47,7 +47,7 @@ export default function Upload(props){
 
     const checkFormData = async () => {
         const filename = document.getElementById('upload').files[0].name
-        let response = await(await fetch(`${url()}/api/checkFileExistance`, {
+        let response = await(await fetch(`${url()}/api/checkFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
@@ -64,7 +64,7 @@ export default function Upload(props){
         let formData = new FormData(); //make form
         var input = document.getElementById('upload').files[0]; //get file
         formData.append('file', input, input.name); //attach file to form
-        let response = await(await fetch(`${url()}/api/upload`, {
+        let response = await(await fetch(`${url()}/api/sendFileData`, {
             headers: {
                 "Authorization": `Token ${key}`,
             },
@@ -76,7 +76,7 @@ export default function Upload(props){
 
     const sendFormData = async () => {
         let tags = document.getElementById('tags').value;
-        let response = await(await fetch(`${url()}/api/rename`, {
+        let response = await(await fetch(`${url()}/api/sendFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },

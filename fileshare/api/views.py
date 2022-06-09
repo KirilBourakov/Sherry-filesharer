@@ -37,29 +37,6 @@ class UserIsLogedIn(APIView):
     def get(self, request):
         response = {'status': True}
         return Response(response)
-    
-class Upload(APIView):
-    def post(self, request):
-        file = ContentFile(request.body, 'a') #the a is a temp file name until I can find out how to get the filename 
-        f = File.objects.create(owner=request.user, tags='', file=file)    
-        f.save()
-        # print(str(f.file).split('/')[len(str(f.file).split('/')) - 1])
-        response = {'status': True, 'pk': f.pk} # 'pk': f.pk, 'oldfilename': str(f.file).split('/')[len(str(f.file).split('/')) - 1]}   
-        return Response(response)  
-
-class checkFileExistance(APIView):
-    def put(self, request):
-        data = json.loads(request.body)
-        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
-            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
-            return Response(response)
-        try:
-            f = File.objects.get(file__contains=data['filename'], owner=request.user)
-            response = {'status': 'exists'}
-            return Response(response)
-        except File.DoesNotExist:
-            response = {'status': 'none'}
-            return Response(response)
 
 class DeleteTemp(APIView):
     def post(self, request):
@@ -69,40 +46,6 @@ class DeleteTemp(APIView):
         response = {'response': True}
         return Response(response)
 
-class Rename(APIView):
-    def post(self, request):
-        data = json.loads(request.body)
-        
-        #check if file is valid
-        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
-            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
-            return Response(response)
-        
-        # get model
-        model = File.objects.get(pk=data['pk'], owner=request.user)
-        model.tags = data['tags'] 
-        model.save()
-        
-        # create new path
-        currentname = str(model.file.path).split('\\')[-1]
-        currentpath = str(model.file.path)
-        currentpath = currentpath.replace(currentname,'')
-        newpath = currentpath + data['filename']
-
-        # rename file
-        try:
-            os.rename(model.file.path, newpath)
-            model.file.name = newpath
-            model.save()
-            response = {'status': True, 'msg': True}   
-            return Response(response)
-        except FileExistsError:
-            File.objects.get(file=newpath).delete()
-            os.rename(model.file.path, newpath)
-            model.file.name = newpath
-            model.save()
-            response = {'status': True, 'msg': f"{data['filename']} overwritten."}   
-            return Response(response)
     
 class Getfiles(APIView):
     def get(self, request, param):
@@ -242,4 +185,67 @@ class DeleteFile(APIView):
             return Response(response)
         except File.DoesNotExist:
             response = {'response': 'Something went wrong. Please insure you are owner.'}
+            return Response(response)
+        
+        
+        
+        
+# File upload
+
+class CheckFormData(APIView):
+    def put(self, request):
+        data = json.loads(request.body)
+        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
+            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
+            return Response(response)
+        try:
+            f = File.objects.get(file__contains=data['filename'], owner=request.user)
+            response = {'status': 'exists'}
+            return Response(response)
+        except File.DoesNotExist:
+            response = {'status': 'none'}
+            return Response(response)
+
+class SendFileData(APIView):
+    def post(self, request):
+        file = ContentFile(request.body, 'a') #the a is a temp file name until I can find out how to get the filename 
+        f = File.objects.create(owner=request.user, tags='', file=file)    
+        f.save()
+        # print(str(f.file).split('/')[len(str(f.file).split('/')) - 1])
+        response = {'status': True, 'pk': f.pk} # 'pk': f.pk, 'oldfilename': str(f.file).split('/')[len(str(f.file).split('/')) - 1]}   
+        return Response(response)  
+
+class SendFormData(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        
+        #check if file is valid
+        if not (data['filename'][-4] == '.' and data['filename'][-3] == 'p' and data['filename'][-2] == 'd' and data['filename'][-1] == 'f'):
+            response = {'status': 'Make sure you are uploading a pdf file. (File must end in .pdf).'}   
+            return Response(response)
+        
+        # get model
+        model = File.objects.get(pk=data['pk'], owner=request.user)
+        model.tags = data['tags'] 
+        model.save()
+        
+        # create new path
+        currentname = str(model.file.path).split('\\')[-1]
+        currentpath = str(model.file.path)
+        currentpath = currentpath.replace(currentname,'')
+        newpath = currentpath + data['filename']
+
+        # rename file
+        try:
+            os.rename(model.file.path, newpath)
+            model.file.name = newpath
+            model.save()
+            response = {'status': True, 'msg': True}   
+            return Response(response)
+        except FileExistsError:
+            File.objects.get(file=newpath).delete()
+            os.rename(model.file.path, newpath)
+            model.file.name = newpath
+            model.save()
+            response = {'status': True, 'msg': f"{data['filename']} overwritten."}   
             return Response(response)
