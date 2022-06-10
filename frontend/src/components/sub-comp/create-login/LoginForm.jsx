@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import{ Link, useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { createRef, useContext, useState } from 'react';
 import { UseKeyHook } from '../../../App';
 import url from './../../utils/url';
 
@@ -10,22 +10,82 @@ const variants = {
 };
 
 export default function LoginForm(){
-    const [alert, alertstatus] = useState(false);
-    const nav = useNavigate()
-    const KeyContext = useContext(UseKeyHook)
+    const [alertView, changeAlertView] = useState(false);
+    const KeyContext = useContext(UseKeyHook);
+    const nav = useNavigate();
+    
+    const usernameRef = createRef()
+    const passwordRef = createRef()
+    const alertRef = createRef()
+
+    const login = async () => {
+        const username = usernameRef.current.value
+        const password = passwordRef.current.value
+        
+        if (username === '' || password === '') {
+            alert('Not all fields are filled.')
+            return
+        }
+
+        const response = await sendLoginData(username, password)
+        if(!checkResponse(response)){
+            alert(response.non_field_errors)
+            return;
+        }
+
+        window.localStorage.setItem('key', response.key);
+        KeyContext(response.key)
+        return nav("/storage"); 
+    }
+
+    const sendLoginData = async (username, password) => {
+        let response = await (await fetch(`${url()}/dj-rest-auth/login/`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                username: username,
+                email: '',
+                password: password
+    
+            })
+        })).json();
+        return response
+    }
+
+    const checkResponse = (response) => {
+        if (!response.key) {
+            return false
+        }
+        return true
+    }
+    
+    const alert = (text) => {
+        const alertbox = alertRef.current
+        alertbox.innerHTML = text
+        changeAlertView(true);
+        setTimeout(() => { 
+            changeAlertView(false);
+            setTimeout(() => {
+                alertbox.classList = 'mt-2 alert';
+            }, 1000);
+        }, 3000);
+    }
+
     return(
         <form>
             
             {/* user name/ email */}
             <div className="form-group">
                 <label htmlFor="username">Username</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" id="username" placeholder="Username/Email"/>
+                <input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" ref={usernameRef} placeholder="Username/Email"/>
             </div>
 
             {/* password */}
             <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" id="password" placeholder="Password"/>
+                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
             </div>
 
             <div className='d-flex'>
@@ -34,7 +94,7 @@ export default function LoginForm(){
                 className="btn btn-danger mt-3 align-self-center" 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => {login(alertstatus, nav, KeyContext)}}>
+                onClick={login}>
                     Login
                 </motion.button>
 
@@ -44,7 +104,7 @@ export default function LoginForm(){
             <motion.div 
             animate={alert ? "open" : "closed"}
             variants={variants}
-            id="probalert"
+            ref={alertRef}
             className="alert alert-danger mt-4" role="alert">
                 
             </motion.div>
@@ -53,40 +113,6 @@ export default function LoginForm(){
     );
 }
 
-async function login(changefunc, nav, KeyContext) {
-    let name = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
-    let email = '';
-    let response = await (await fetch(`${url()}/dj-rest-auth/login/`, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({
-            username: name,
-            email: email,
-            password: password
-
-        })
-    })).json();
-    if (response.non_field_errors){
-        let msg = String(response.non_field_errors).replace(/,/gi,'<br/>');
-        alert(msg, changefunc);
-        return;
-    } if(response.key){
-        window.localStorage.setItem('key', response.key);
-        KeyContext(response.key)
-        return nav("/storage"); 
-    }
-}
-
 function alert(text, changefunc){
-    document.getElementById('probalert').innerHTML = text
-    changefunc(true);
-    setTimeout(() => { 
-        changefunc(false);
-        setTimeout(() => {
-            alert.classList = 'mt-2 alert';
-        }, 1000);
-    }, 3000);
+    
 };
