@@ -112,7 +112,3 @@ export default function LoginForm(){
         </form>
     );
 }
-
-function alert(text, changefunc){
-    
-};
