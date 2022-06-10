@@ -8,14 +8,26 @@ const variants = {
 };
 
 export default function AboutSherry() {
-    const [alertisOpen, changealertisOpen] = useState(false);
+    const [alertView, changealertView] = useState(false);
+
+    const githubRedirect = () => {
+        const url = 'https://github.com/thepug432/CS50w-final-project-Sherry-filesharer-';
+        window.open(url, '_blank').focus();
+    }
+
+    const copy = () => {
+        navigator.clipboard.writeText('kirbou06012@gmail.com');
+        changealertView(true);
+        setTimeout(() => { changealertView(false) }, 2000);
+    }
+
     return (
         <div className='col'>
             <h1 className="display-6 my-2">About Sharry</h1>
             <motion.p 
             whileHover={{ scale: 1.04 }} 
             whileTap={{ scale: 0.96 }} 
-            onClick={() => {copy(changealertisOpen)}}
+            onClick={copy}
             >
                 In all seriousness, Sharry is my CS50W final project.
                 If you'd like to contact me, please reach out either using 
@@ -26,7 +38,7 @@ export default function AboutSherry() {
             className='my-2'
             whileHover={{ scale: 1.04 }} 
             whileTap={{ scale: 0.96 }} 
-            onClick={github}
+            onClick={githubRedirect}
             >
                 On the other hand, you can see the github page 
                 <a className='text-white' href='https://github.com/thepug432/CS50w-final-project-Sherry-filesharer-'> here.</a> 
@@ -71,7 +83,7 @@ export default function AboutSherry() {
              <motion.div
                 className="alert alert-success" 
                 role="alert"
-                animate={alertisOpen ? "open" : "closed"}
+                animate={alertView ? "open" : "closed"}
                 variants={variants}
             >
                 Copied to clipboard!
@@ -79,15 +91,4 @@ export default function AboutSherry() {
             
         </div>
     );
-};
-
-function github() {
-    let url = 'https://github.com/thepug432/CS50w-final-project-Sherry-filesharer-';
-    window.open(url, '_blank').focus();
-};
-
-function copy(changefunc) {
-    navigator.clipboard.writeText('kirbou06012@gmail.com');
-    changefunc(true);
-    setTimeout(() => { changefunc(false) }, 2000);
 };
