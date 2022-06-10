@@ -3,6 +3,12 @@ import IMG from './../../../resources/images/password.jpg';
 
 
 export default function CreateAccountImg(){
+
+    const attribution = () => {
+        let url = 'http://www.freepik.com';
+        window.open(url, '_blank').focus();
+    }
+
     return(
         <motion.div
         className='imgholder'
@@ -17,9 +23,4 @@ export default function CreateAccountImg(){
             <small className='imgtext text-muted'>Designed by slidesgo / Freepik</small>
         </motion.div>
     );
-};
-
-function attribution() {
-    let url = 'http://www.freepik.com';
-    window.open(url, '_blank').focus();
 };
