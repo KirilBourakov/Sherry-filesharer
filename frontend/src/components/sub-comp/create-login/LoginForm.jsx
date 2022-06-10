@@ -102,7 +102,7 @@ export default function LoginForm(){
             </div> 
             
             <motion.div 
-            animate={alert ? "open" : "closed"}
+            animate={alertView ? "open" : "closed"}
             variants={variants}
             ref={alertRef}
             className="alert alert-danger mt-4" role="alert">
