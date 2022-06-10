@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { createRef, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
@@ -12,10 +12,64 @@ const variants = {
 
 export default function Contact(){
     const [sentisOpen, changesentisOpen] = useState(true);
+    const emailRef = createRef()
+    const subjectRef = createRef()
+    const contentRef = createRef()
+    const alertRef = createRef()
+
+    const sendemail = async () => {
+        const response = await (await fetch(`${url()}/api/sendmail`, {
+            method: 'POST',
+            body: JSON.stringify({
+                EmailBack: emailRef.current.value,
+                Subject: subjectRef.current.value,
+                Content: contentRef.current.value
+            })
+        }
+        )).json();
+
+        checkresponse(response)
+    }
+
+    const checkresponse = (response) => {
+        if (response.message === 'Email sent') {
+            emailRef.current.value = ''
+            subjectRef.current.value = ''
+            contentRef.current.value = ''
+            alert('success', 'Sent!')
+            return;
+        }
+        if (response.message) {
+            alert('fail', response.message)
+            return;
+        }
+        alert('fail', "I'm sorry, something went wrong. Please wait, then try again. Or, reach out directly via my email.")
+    }
+
+    const alert = (type, msg) => {
+        const element = document.getElementById('SentAlert')
+
+        if (type === 'success') {
+            alert.classList.add('alert-success');
+            alert.innerHTML = msg;
+        } else{
+            alert.classList.add('alert-danger');
+            alert.innerHTML = msg;
+        }
+
+        changesentisOpen(true);
+            setTimeout(() => { 
+                changesentisOpen(false);
+                setTimeout(() => {
+                    alert.classList = 'mt-2 alert'
+                }, 1200);
+            }, 2000);
+    }
+
     return (
         <div className='col-7 mt-3 contact'>
             <Form>
-            <Form.Group className="mb-3" controlId="EmailBack">
+            <Form.Group className="mb-3" ref={emailRef}>
                 <Form.Label>Your email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" />
                 <Form.Text className="text-muted">
@@ -23,12 +77,12 @@ export default function Contact(){
                 </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="subject">
+            <Form.Group className="mb-3" ref={subjectRef}>
                 <Form.Label>Subject</Form.Label>
                 <Form.Control type="text" placeholder="Subject" />
             </Form.Group>
             
-            <FloatingLabel controlId="content" label="Comments">
+            <FloatingLabel ref={contentRef} label="Comments">
                 <Form.Control
                 as="textarea"
                 placeholder="Leave a comment here"
@@ -36,7 +90,7 @@ export default function Contact(){
                 />
             </FloatingLabel>
             
-            <Button variant="primary mt-2" type="button" onClick={() => {sendemail(changesentisOpen)}}>
+            <Button variant="primary mt-2" type="button" onClick={sendemail}>
                 Submit
             </Button>
             </Form>
@@ -51,43 +105,3 @@ export default function Contact(){
         </div>
     );
 };
-
-async function sendemail(changefunc){
-    let u = url();
-    let response = await (await fetch(`${u}/api/sendmail`, {
-        method: 'POST',
-        body: JSON.stringify({
-            EmailBack: document.getElementById('EmailBack').value,
-            Subject: document.getElementById('subject').value,
-            Content: document.getElementById('content').value
-        })
-    }
-    )).json();
-    // check if email was sent
-    let alert = document.getElementById('SentAlert')
-    if (response.message === 'Email sent'){
-        document.getElementById('EmailBack').value = '';
-        document.getElementById('subject').value = '';
-        document.getElementById('content').value = '';
-        
-        //change html
-        alert.classList.add('alert-success');
-        alert.innerHTML = 'Sent!';
-
-    } else if (response.message === 'Content is missing' || response.message === 'Sender is missing' || response.message === 'Subject is missing') {
-        alert.classList.add('alert-danger');
-        alert.innerHTML = response.message;
-    } else{
-        alert.classList.add('alert-danger')
-        alert.innerHTML = "I'm sorry, something went wrong. Please wait, then try again. Or, reach out directly via my email.";
-    }
-    // show, then hide the message
-    changefunc(true);
-    setTimeout(() => { 
-        changefunc(false);
-        setTimeout(() => {
-            alert.classList = 'mt-2 alert'
-        }, 1200);
-    }, 2000);
-    
-}
