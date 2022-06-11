@@ -22,10 +22,32 @@ export default function Delete(){
     const forceupdate = useContext(updateContext)[1];
     const { id } = useParams();
     const nav = useNavigate();
+
+    const remove = async () => {
+        if(!window.confirm('This Action is irreversible, are you sure you wish to proceed?')){
+            return;
+        }
+        const response = await (await (fetch(`${url()}/api/deleteFile/${id}`, {
+            headers: {
+                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+            },
+            method: 'POST',
+        }))).json();
+    
+        if (response.response !== true) {
+            alert(response.response)
+            return;
+        }
+        alert('File Deleted')
+        nav("/storage");
+        forceupdate(update+1);
+        return;
+    }
+
     return(
         <>
             <motion.button 
-                onClick={() => {remove(id, nav); forceupdate(update+1);}}
+                onClick={remove}
                 whileHover={'HoverDelete'}
                 variants={variants} 
                 className="btn btn-danger ms-2 mb-1">
@@ -35,24 +57,4 @@ export default function Delete(){
         </>
     );
 };
-
-async function remove(id, nav) {
-    if(!window.confirm('This Action is irreversible, are you sure you wish to proceed?')){
-        return;
-    }
-    let response = await (await (fetch(`${url()}/api/deleteFile/${id}`, {
-        headers: {
-            "Authorization": `Token ${window.localStorage.getItem('key')}`,
-        },
-        method: 'POST',
-    }))).json();
-
-    if (response.response !== true) {
-        alert(response.response)
-        return;
-    }
-    alert('File Deleted')
-    nav("/storage");
-    return;
-}
 
