@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { createRef, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import url from '../../utils/url';
@@ -25,13 +25,85 @@ export default function EditShared(){
     const pub = useContext(shareContext)[0];
     const shared = useContext(shareContext)[1];
     const [alertview, changeAlertView] = useState(false)
+    const removeUserRef = createRef()
+    const addUserRef = createRef()
+
+    const changePrivate = async () => {
+        let response = await (await (fetch(`${url()}/api/ChangePrivate/${id}`, {
+            headers: {
+                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                bool: !pub
+            })
+            
+        }))).json();
+    
+        if (response.response !== true) {
+            alertError(response.response)
+            return;
+        }
+        updateView()
+        return;
+    }
+
+    const removeUser = async () => {
+        const user = removeUserRef.current.value
+        let response = await (await (fetch(`${url()}/api/RemoveUser/${id}`, {
+            headers: {
+                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                user: user
+                
+            })
+        }))).json();
+        if (response.response !== true) {
+            alertError(response.response)
+            return;
+        }
+        updateView()
+        return;
+    }
+
+    const addUser = async () => {
+        let user =  addUserRef.current.value
+        let response = await (await (fetch(`${url()}/api/addUser/${id}`, {
+            headers: {
+                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                user: user
+                
+            })
+        }))).json();
+        if (response.response !== true) {
+            alertError(response.response)
+            return;
+        }
+        return;
+    }
+
+    const alertError = (msg) => {
+        document.getElementById('alert').innerHTML = msg
+        changeAlertView(true);
+        setTimeout(() => { changeAlertView(false); }, 2000);
+    }
+
+    const updateView = () => {
+        forceupdate(update+1)
+        return;
+    }
 
     if (pub){
         return(
             <div className='d-flex align-items-start mt-3'>
                 <h3 className="me-2">Currently Public</h3>
                 <motion.button 
-                onClick={() => {makePrivate(id, !pub); forceupdate(update+1);}}
+                onClick={changePrivate}
                 whileHover={'HoverDelete'}
                 variants={variants} 
                 className="btn btn-danger ms-2">
@@ -44,7 +116,7 @@ export default function EditShared(){
             <>
             <div className='d-flex flex-column align-items-start mt-3 mb-1'>
                 <motion.button 
-                onClick={() => {makePrivate(id, !pub, changeAlertView); forceupdate(update+1);}}
+                onClick={changePrivate}
                 whileHover={'HoverDelete'}
                 variants={variants} 
                 className="btn btn-outline-danger mb-1 me-1">
@@ -64,7 +136,7 @@ export default function EditShared(){
                         </motion.button>
                     </div>
                     <div className="col-8">
-                        <select className="select" id="removeUser">
+                        <select className="select" ref={removeUserRef}>
                             <option defaultValue>Remove User From Shared With</option>
                             
                             {shared &&
@@ -94,7 +166,7 @@ export default function EditShared(){
                     </div>
                     <div className="col-8 ps-0 pe-1">
                         <div className="input-group mb-3">
-                            <input type='text' id="addUser" className="form-control" placeholder='Name or user id'></input>
+                            <input type='text' ref={addUserRef} className="form-control" placeholder='Name or user id'></input>
                         </div>
                     </div>
                     <small className="form-text text-muted m-0">Use a # if adding by id</small>
@@ -115,66 +187,3 @@ export default function EditShared(){
     };
     
 };
-
-async function makePrivate(id, bool, changefunc) {
-    let response = await (await (fetch(`${url()}/api/ChangePrivate/${id}`, {
-        headers: {
-            "Authorization": `Token ${window.localStorage.getItem('key')}`,
-        },
-        method: 'PUT',
-        body: JSON.stringify({
-            bool: bool
-        })
-        
-    }))).json();
-
-    if (response.response !== true) {
-        alertError(response.response, changefunc)
-        return;
-    }
-    return;
-};
-
-async function removeUser(id, changefunc) {
-    let user =  document.getElementById('removeUser').value
-    let response = await (await (fetch(`${url()}/api/RemoveUser/${id}`, {
-        headers: {
-            "Authorization": `Token ${window.localStorage.getItem('key')}`,
-        },
-        method: 'PUT',
-        body: JSON.stringify({
-            user: user
-            
-        })
-    }))).json();
-    if (response.response !== true) {
-        alertError(response.response, changefunc)
-        return;
-    }
-    return;
-}
-
-async function addUser(id, changefunc) {
-    let user =  document.getElementById('addUser').value
-    let response = await (await (fetch(`${url()}/api/addUser/${id}`, {
-        headers: {
-            "Authorization": `Token ${window.localStorage.getItem('key')}`,
-        },
-        method: 'PUT',
-        body: JSON.stringify({
-            user: user
-            
-        })
-    }))).json();
-    if (response.response !== true) {
-        alertError(response.response, changefunc)
-        return;
-    }
-    return;
-}
-
-function alertError(msg, changefunc) {
-    document.getElementById('alert').innerHTML = msg
-    changefunc(true);
-    setTimeout(() => { changefunc(false); }, 2000);
-}
