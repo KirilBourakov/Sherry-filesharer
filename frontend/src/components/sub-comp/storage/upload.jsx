@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import url from './../../utils/url';
 import { createRef, useState } from 'react';
 import AlertDanger from '../../AlertDanger';
+import AlertSuccess from '../../AlertSuccess';
 
 const variants = {
     HoverSubmitFile:{
@@ -13,8 +14,6 @@ const variants = {
             duration: .3
         }
     },
-    open: { opacity: 1, x: 0, hight:"100%" },
-    closed: { opacity: 0, x: "-100%", hight:'0px'},
     hoverform:{
         scale: 1.02,
         transition: {
@@ -39,18 +38,28 @@ export default function Upload(props){
     const [errorView, setErrorView] = useState(false);
     const [errorText, setErrorText] = useState('')
 
+    //alert success state
+    const [successView, setSuccessView] = useState(false);
+    const [successText, setSuccessText] = useState('')
+
     const uploadFile = async (e) => {
         const file = fileRef.current
         const tags = tagRef.current
-        if (await checkFormData(file)){
+        const check = await checkFormData(file)
+        if (check.exists === false){
             if (!window.confirm('This file apears to exist. If you continue, it will be overwritten')){
                 file.value = ''
                 tags.value = ''
                 return;
             }
         }
+        if (check.status) {
+            alertError(check.status)
+            return;
+        }
         const response = await sendFileData(file);
-        await sendFormData(tags, response, file);
+        const confirm = await sendFormData(tags, response, file);
+        alertSuccess(confirm)
         file.value = ''
         tags.value = ''
         props.update()
@@ -69,12 +78,7 @@ export default function Upload(props){
                 filename: filename,
             })
         })).json();
-        if (response.exists === true) {
-            return true
-        } else if (response.status !== 'clear'){
-            window.alert('Please make sure the file is a pdf')
-        }
-        return false
+        return response
     }
 
     // send raw file bytes
@@ -107,11 +111,19 @@ export default function Upload(props){
                 TempName: oldFileData.temp_name
             })
         })).json();
-        alertSuccess(response.msg)
+        return response.msg
     }
 
     // alert user about upload status
     const alertSuccess = (text) => {
+        setSuccessText(text)
+        setSuccessView(true);
+        setTimeout(() => { setSuccessView(false); }, 5000);
+        return
+    } 
+
+    const alertError = (text) => {
+        setErrorText(text)
         setErrorView(true);
         setTimeout(() => { setErrorView(false); }, 5000);
         return
@@ -154,18 +166,17 @@ export default function Upload(props){
             <AlertDanger 
                 text={errorText} 
                 see={errorView}
-                animate={{ opacity: 1, y:0 }}
-                change={{ opacity: 0, y:'30px' }}
+                animate={{ opacity: 1, x: 0, hight:"100%" }}
+                change={{ opacity: 0, x: "-100%", hight:'0px'}}
             />
 
-                <motion.div 
-                animate={successview ? "open" : "closed"}
-                variants={variants}
-                id='sucess'
-                className="alert alert-success mt-3" 
-                role="alert">
-                    File uploaded successfully.
-                </motion.div>
+            <AlertSuccess 
+                text={successText} 
+                see={successView}
+                animate={{ opacity: 1, x: 0, hight:"100%" }}
+                change={{ opacity: 0, x: "-100%", hight:'0px'}}
+            />
+
         </div>
     );
 };

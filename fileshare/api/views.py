@@ -207,7 +207,7 @@ class CheckFormData(APIView):
             response = {'exists': True}
             return Response(response)
         except File.DoesNotExist:
-            response = {'status': 'clear'}
+            response = {'exits': False}
             return Response(response)
 
 class SendFileData(APIView):
