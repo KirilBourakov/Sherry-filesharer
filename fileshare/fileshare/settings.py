@@ -99,9 +99,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fileshare.wsgi.application'
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'https://sherry-pdf-share.netlify.app'
+    #'http://localhost:3000',
+]
 ALLOWED_HOSTS = ['cherry-pdf-sharer.herokuapp.com'] # ,'127.0.0.1']
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
