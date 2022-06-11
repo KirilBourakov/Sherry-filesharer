@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { createRef } from 'react';
 
 const variants = {
     animatesearch:{
@@ -12,12 +13,24 @@ const variants = {
 };
 
 export default function Search(props){
+
+    const searchRef = createRef()
+
+    const search = () => {
+        const userparm = searchRef.current.value.trim();
+        if (userparm === ''){
+            props.changesearch('|<>|');
+        }else{
+            props.changesearch(userparm);
+        };
+    }
+
     return(
         <form>
             <div className="row">
                 <div className="col-3 p-0">
                     <div className="form-group">
-                        <input type="text" className="form-control" id="search" placeholder="Search" onChange={() => {search(props.changesearch)}} />
+                        <input type="text" className="form-control" key={createRef} placeholder="Search" onChange={search} />
                     </div>
                 </div>
 
@@ -34,14 +47,4 @@ export default function Search(props){
             </div>
         </form>
     );
-};
-
-function search(changeparm) {
-    let userparm = document.getElementById('search').value.trim();
-    if (userparm === ''){
-        changeparm('|<>|');
-    }else{
-        changeparm(userparm);
-    };
-    
 };
