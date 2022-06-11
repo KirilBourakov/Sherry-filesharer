@@ -18,20 +18,22 @@ const variants = {
 export default function File(props){
     const [filename, changefilename] = useState(props.content.split('/')[props.content.split('/').length-1].replaceAll('%20', ' '));
     const nav = useNavigate()
+
+    const gotofile = () => {
+        return nav(`/item/${props.fileid}`);
+    }
+
+
     return(
             <motion.div 
             whileHover={'HoverFile'}
             variants={variants}
             className="border border-dark rounded p-1 d-flex" 
-            onClick={() => {gotofile(props.fileid, nav)}}>
+            onClick={gotofile} >
                 <div className="align-self-center">
                     <MdOutlinePictureAsPdf size={30}/>
                 </div>
                 <h4 className="align-self-center ms-auto mb-0">{filename}</h4>
             </motion.div>
     );
-};
-
-function gotofile(id, nav) {
-    return nav(`/item/${id}`);
 };
