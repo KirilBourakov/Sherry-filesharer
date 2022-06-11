@@ -238,7 +238,7 @@ class SendFormData(APIView):
             os.rename(model.file.path, newpath)
             model.file.name = newpath
             model.save()
-            response = {'status': True, 'msg': True}   
+            response = {'status': True, 'msg': 'File uploaded!'}   
             return Response(response)
         except FileExistsError:
             File.objects.get(file=newpath).delete()

@@ -2,6 +2,7 @@ import Form from 'react-bootstrap/Form'
 import { motion } from 'framer-motion'
 import url from './../../utils/url';
 import { createRef, useState } from 'react';
+import AlertDanger from '../../AlertDanger';
 
 const variants = {
     HoverSubmitFile:{
@@ -30,10 +31,13 @@ const variants = {
 };
 
 export default function Upload(props){
-    const [errorview, changeerrorview] = useState(false);
     const [successview, changesuccessview] = useState(false);
     const fileRef = createRef();
     const tagRef = createRef();
+
+    // alert error state
+    const [errorView, setErrorView] = useState(false);
+    const [errorText, setErrorText] = useState('')
 
     const uploadFile = async (e) => {
         const file = fileRef.current
@@ -46,8 +50,7 @@ export default function Upload(props){
             }
         }
         const response = await sendFileData(file);
-        const confirm = await sendFormData(tags, response, file);
-        alert(confirm)
+        await sendFormData(tags, response, file);
         file.value = ''
         tags.value = ''
         props.update()
@@ -104,19 +107,13 @@ export default function Upload(props){
                 TempName: oldFileData.temp_name
             })
         })).json();
-        alert(response.msg)
-        return response.status
+        alertSuccess(response.msg)
     }
 
     // alert user about upload status
-    const alert = (success) => {
-        if (success) {
-            changesuccessview(true);
-            setTimeout(() => { changesuccessview(false); }, 5000);
-            return
-        }
-        changeerrorview(true);
-        setTimeout(() => { changeerrorview(false); }, 5000);
+    const alertSuccess = (text) => {
+        setErrorView(true);
+        setTimeout(() => { setErrorView(false); }, 5000);
         return
     } 
 
@@ -154,15 +151,13 @@ export default function Upload(props){
                 </motion.button>
             </Form>
 
-            <div className='abs'>
-                <motion.div 
-                animate={errorview ? "open" : "closed"}
-                variants={variants}
-                id='error'
-                className="alert alert-danger mt-3 rel" 
-                role="alert">
-                    Sorry, something went wrong. Please try again later, and make sure the file field is not empty.
-                </motion.div>
+            <AlertDanger 
+                text={errorText} 
+                see={errorView}
+                animate={{ opacity: 1, y:0 }}
+                change={{ opacity: 0, y:'30px' }}
+            />
+
                 <motion.div 
                 animate={successview ? "open" : "closed"}
                 variants={variants}
@@ -171,7 +166,6 @@ export default function Upload(props){
                 role="alert">
                     File uploaded successfully.
                 </motion.div>
-            </div>
         </div>
     );
 };

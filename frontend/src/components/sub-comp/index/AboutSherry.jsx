@@ -1,11 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
-
-const variants = {
-    open: { opacity: 1, x: 0 },
-    closed: { opacity: 0, x: -50 },
-};
+import AlertSuccess from '../../AlertSuccess';
 
 export default function AboutSherry() {
     const [alertView, changealertView] = useState(false);
@@ -80,15 +76,12 @@ export default function AboutSherry() {
             
 
              {/*copy alert */}
-             <motion.div
-                className="alert alert-success" 
-                role="alert"
-                animate={alertView ? "open" : "closed"}
-                variants={variants}
-            >
-                Copied to clipboard!
-            </motion.div>
-            
+             <AlertSuccess 
+                text={'Copied to clipboard!'}
+                see={alertView}
+                animate={{ opacity: 1, x: 0 }}
+                change={{ opacity: 0, x: -50 }}
+             />
         </div>
     );
 };
