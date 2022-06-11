@@ -145,13 +145,23 @@ class RemoveUser(APIView):
 class AddUser(APIView):
     def put(self, request, id):
         data = json.loads(request.body)
-        if data['user'] == request.user.username or data['user'].replace('#', '').strip() == request.user.pk:
+
+        # check if owner is adding owner
+        if data['user'] == request.user.username or int(data['user'].replace('#', '').strip()) == request.user.pk:
             response = {'response': 'Owner cannot add themselves.'}
             return Response(response)
+        
         if '#' in data['user']:
+            
             try:
                 u = User.objects.get(pk=data['user'].replace('#', '').strip())
                 f = File.objects.get(pk=id)
+                
+                #check if user is added
+                if u in f.shared_with.all():
+                    response = {'response': 'User is already added'}
+                    return Response(response)
+                
                 f.shared_with.add(u)
                 response = {'response': True}
                 return Response(response)
@@ -162,6 +172,12 @@ class AddUser(APIView):
             try:
                 u = User.objects.get(username=data['user'])
                 f = File.objects.get(pk=id)
+                
+                #check if user is added
+                if u in f.shared_with.all():
+                    response = {'response': 'User is already added'}
+                    return Response(response)
+                
                 f.shared_with.add(u)
                 response = {'response': True}
                 return Response(response)

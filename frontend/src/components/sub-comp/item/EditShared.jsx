@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import url from '../../utils/url';
 import { shareContext, updateContext } from './description';
 import AlertDanger from "../../AlertDanger";
-
+import AlertSuccess from '../../AlertSuccess'
 
 const variants = {
     HoverButton:{
@@ -29,6 +29,10 @@ export default function EditShared(){
     //error state
     const [errorView, setErrorView] = useState(false)
     const [errorText, setErrorText] = useState('')
+
+    //success state
+    const [successView, setSuccessView] = useState(false)
+    const [successText, setSuccessText] = useState('')
 
     //ref
     const removeUserRef = createRef()
@@ -90,6 +94,7 @@ export default function EditShared(){
             alertError(response.response)
             return;
         }
+        alertSuccess('User added')
         updateView()
         return;
     }
@@ -98,6 +103,12 @@ export default function EditShared(){
         setErrorText(msg)
         setErrorView(true);
         setTimeout(() => { setErrorView(false); }, 2000);
+    }
+
+    const alertSuccess = (msg) => {
+        setSuccessText(msg)
+        setSuccessView(true);
+        setTimeout(() => { setSuccessView(false); }, 2000);
     }
 
     const updateView = () => {
@@ -183,6 +194,12 @@ export default function EditShared(){
                 <AlertDanger 
                     text={errorText} 
                     see={errorView}
+                    animate={{ opacity: 1, y:0 }}
+                    change={{ opacity: 0, y:'30px' }}
+                />
+                <AlertSuccess
+                    text={successText}
+                    see={successView}
                     animate={{ opacity: 1, y:0 }}
                     change={{ opacity: 0, y:'30px' }}
                 />

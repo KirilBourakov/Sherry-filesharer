@@ -30,18 +30,7 @@ export default function Search(props){
             <div className="row">
                 <div className="col-3 p-0">
                     <div className="form-group">
-                        <input type="text" className="form-control" key={createRef} placeholder="Search" onChange={search} />
-                    </div>
-                </div>
-
-                <div className="col">
-                    <div className="form-group">
-                        <motion.button 
-                        type="button" 
-                        className="btn btn-danger"
-                        whileHover={'animatesearch'}
-                        variants={variants}
-                        >Search</motion.button>
+                        <input type="text" className="form-control" ref={searchRef} placeholder="Search" onChange={search} />
                     </div>
                 </div>
             </div>
