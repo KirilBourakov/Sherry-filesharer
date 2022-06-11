@@ -3,6 +3,8 @@ import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
 import { UseKeyHook } from '../../../App';
 import url from './../../utils/url';
+import AlertDanger from '../../AlertDanger';
+
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -11,12 +13,12 @@ const variants = {
 
 export default function LoginForm(){
     const [alertView, changeAlertView] = useState(false);
+    const [AlertText, setAlertText] = useState('')
     const KeyContext = useContext(UseKeyHook);
     const nav = useNavigate();
     
     const usernameRef = createRef()
     const passwordRef = createRef()
-    const alertRef = createRef()
 
     const login = async () => {
         const username = usernameRef.current.value
@@ -62,14 +64,10 @@ export default function LoginForm(){
     }
     
     const alert = (text) => {
-        const alertbox = alertRef.current
-        alertbox.innerHTML = text
+        setAlertText(text)
         changeAlertView(true);
         setTimeout(() => { 
             changeAlertView(false);
-            setTimeout(() => {
-                alertbox.classList = 'mt-2 alert';
-            }, 1000);
         }, 3000);
     }
 
@@ -85,7 +83,7 @@ export default function LoginForm(){
             {/* password */}
             <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <motion.input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
+                <input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
             </div>
 
             <div className='d-flex'>
@@ -100,15 +98,12 @@ export default function LoginForm(){
 
                 <Link to={'/create-account'} className='ms-auto align-self-center'>Don't have an account?</Link>
             </div> 
-            
-            <motion.div 
-            animate={alertView ? "open" : "closed"}
-            variants={variants}
-            ref={alertRef}
-            className="alert alert-danger mt-4" role="alert">
-                
-            </motion.div>
-
+            <AlertDanger 
+                text={AlertText} 
+                see={alertView}
+                animate={{ opacity: 1, x: 0}}
+                change={{ opacity: 0, x: "-100%" }}
+            />
         </form>
     );
 }
