@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import url from '../../utils/url';
 import { shareContext, updateContext } from './description';
+import AlertDanger from "../../AlertDanger";
 
 
 const variants = {
@@ -24,7 +25,12 @@ export default function EditShared(){
     const forceupdate = useContext(updateContext)[1];
     const pub = useContext(shareContext)[0];
     const shared = useContext(shareContext)[1];
-    const [alertview, changeAlertView] = useState(false)
+
+    //error state
+    const [errorView, setErrorView] = useState(false)
+    const [errorText, setErrorText] = useState('')
+
+    //ref
     const removeUserRef = createRef()
     const addUserRef = createRef()
 
@@ -84,13 +90,14 @@ export default function EditShared(){
             alertError(response.response)
             return;
         }
+        updateView()
         return;
     }
 
     const alertError = (msg) => {
-        document.getElementById('alert').innerHTML = msg
-        changeAlertView(true);
-        setTimeout(() => { changeAlertView(false); }, 2000);
+        setErrorText(msg)
+        setErrorView(true);
+        setTimeout(() => { setErrorView(false); }, 2000);
     }
 
     const updateView = () => {
@@ -128,7 +135,7 @@ export default function EditShared(){
                 <div className="row">
                     <div className="col-4 pe-0">
                         <motion.button 
-                        onClick={() => {removeUser(id, changeAlertView); forceupdate(update+1);}}
+                        onClick={removeUser}
                         whileHover={'HoverDelete'}
                         variants={variants} 
                         className="btn btn-outline-danger mb-1">
@@ -157,7 +164,7 @@ export default function EditShared(){
                 <div className="row">
                     <div className="col-4 pe-0">
                         <motion.button 
-                        onClick={() => {addUser(id, changeAlertView); forceupdate(update+1);}}
+                        onClick={addUser}
                         whileHover={'HoverDelete'}
                         variants={variants} 
                         className="btn btn-outline-danger mb-1">
@@ -173,14 +180,12 @@ export default function EditShared(){
                 </div>
             </div>
 
-            <motion.div 
-            animate={alertview ? "open" : "closed"}
-            variants={variants}
-            className="alert alert-danger"
-            id='alert' 
-            role="alert">
-                
-            </motion.div>
+                <AlertDanger 
+                    text={errorText} 
+                    see={errorView}
+                    animate={{ opacity: 1, y:0 }}
+                    change={{ opacity: 0, y:'30px' }}
+                />
             </>
         )
         
