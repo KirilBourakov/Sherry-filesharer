@@ -1,5 +1,4 @@
 
 export default function url(){
-    return 'http://127.0.0.1:8000';
+    return 'https://cherry-pdf-sharer.herokuapp.com';
 };
-//https://cherry-pdf-sharer.herokuapp.com
