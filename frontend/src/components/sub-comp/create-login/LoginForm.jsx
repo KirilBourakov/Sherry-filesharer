@@ -77,13 +77,13 @@ export default function LoginForm(){
             {/* user name/ email */}
             <div className="form-group">
                 <label htmlFor="username">Username</label>
-                <input whileFocus={{ scale: .98 }} autoComplete='off' type="text" className="form-control" ref={usernameRef} placeholder="Username/Email"/>
+                <input autoComplete='off' type="text" className="form-control" ref={usernameRef} placeholder="Username/Email"/>
             </div>
 
             {/* password */}
             <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input whileFocus={{ scale: .98 }} autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
+                <input autoComplete='off' type="password" className="form-control" ref={passwordRef} placeholder="Password"/>
             </div>
 
             <div className='d-flex'>

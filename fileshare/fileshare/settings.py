@@ -11,18 +11,23 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+#init env
+
+env = environ.Env()
+environ.Env.read_env()
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fr++!t@kgg1hbp(plzqe2gm6^iz^_5#sp6ruuganmhc34cu35h'
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -100,10 +105,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fileshare.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
-    'https://sherry-pdf-share.netlify.app'
-    #'http://localhost:3000',
+    'https://sherry-pdf-share.netlify.app',
+    'http://localhost:3000',
 ]
-ALLOWED_HOSTS = ['cherry-pdf-sharer.herokuapp.com'] # ,'127.0.0.1']
+ALLOWED_HOSTS = [
+    'cherry-pdf-sharer.herokuapp.com',
+    '127.0.0.1'         
+]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
@@ -112,8 +120,12 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('DATABASE_NAME'),
+        'USER':  env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASS'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 AUTH_USER_MODEL = 'api.User'

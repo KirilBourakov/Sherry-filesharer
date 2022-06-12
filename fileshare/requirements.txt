@@ -12,6 +12,7 @@ dj-rest-auth==2.2.4
 Django==4.0.3
 django-allauth==0.50.0
 django-cors-headers==3.11.0
+django-environ==0.8.1
 djangorestframework==3.13.1
 gunicorn==20.1.0
 idna==3.3
@@ -20,6 +21,7 @@ oauthlib==3.2.0
 Pillow==9.1.0
 platformdirs==2.5.2
 premailer==3.10.0
+psycopg2==2.9.3
 pycparser==2.21
 PyJWT==2.3.0
 python3-openid==3.2.0
