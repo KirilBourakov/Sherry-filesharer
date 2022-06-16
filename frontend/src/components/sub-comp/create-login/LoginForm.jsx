@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
 import { UseKeyHook } from '../../../App';
-import url from './../../utils/url';
 import AlertDanger from '../../AlertDanger';
 
 
@@ -41,7 +40,7 @@ export default function LoginForm(){
     }
 
     const sendLoginData = async (username, password) => {
-        let response = await (await fetch(`${url()}/dj-rest-auth/login/`, {
+        let response = await (await fetch(`dj-rest-auth/login/`, {
             headers: {
                 'Content-Type': 'application/json'
             },

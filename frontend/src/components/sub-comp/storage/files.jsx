@@ -1,5 +1,4 @@
 import File from '../multi/file'
-import url from './../../utils/url'
 import { useEffect, useState } from 'react';
 
 export default function Files(props){
@@ -8,7 +7,7 @@ export default function Files(props){
     
     useEffect((accesskey=key, parm=props.params) => {
         const fetchFiles = () => {
-            fetch(`${url()}/api/getfiles/${parm}`, {
+            fetch(`api/getfiles/${parm}`, {
                 headers: {
                     "Authorization": `Token ${accesskey}`,
                 }

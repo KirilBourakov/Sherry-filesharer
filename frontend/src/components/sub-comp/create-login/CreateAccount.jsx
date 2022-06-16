@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { createRef, useContext, useState } from 'react';
 import{ Link, useNavigate } from 'react-router-dom';
-import url from './../../utils/url';
 import { UseKeyHook } from '../../../App';
 
 const variants = {
@@ -45,7 +44,7 @@ export default function CreateAccount() {
     }
 
     const sendData = async (usernameValue, emailValue, passwordValue, conpassValue) => {
-        let response = await (await fetch(`${url()}/dj-rest-auth/registration/`, { 
+        let response = await (await fetch(`dj-rest-auth/registration/`, { 
             headers: {
                 'Content-Type': 'application/json'
             },

@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import Spinner from 'react-bootstrap/Spinner'
-import url from '../../utils/url'
 import { UseKeyHook } from '../../../App';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
@@ -13,7 +12,7 @@ export default function Logout(){
     }, [])
     
     const logout = async () => {
-        let response = await (await fetch(`${url()}/dj-rest-auth/logout/`,
+        let response = await (await fetch(`dj-rest-auth/logout/`,
         {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`

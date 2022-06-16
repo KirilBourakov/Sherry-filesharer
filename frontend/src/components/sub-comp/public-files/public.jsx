@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import File from '../multi/file';
 import Search from '../multi/search';
-import url from '../../utils/url';
 
 export default function Public(){
     const [parm, changeparm] = useState('|<>|');
     const [data, setdata ] = useState([]);
     useEffect(() =>{
         const getPublicFiles = () =>{
-            fetch(`${url()}/api/getpublicfiles/${parm}`, {
+            fetch(`api/getpublicfiles/${parm}`, {
                 headers: {
                     "Authorization": `Token ${window.localStorage.getItem('key')}`,
                 }

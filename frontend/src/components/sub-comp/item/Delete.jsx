@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateContext } from './description';
-import url from "../../utils/url";
 
 const variants = {
     HoverButton:{
@@ -27,7 +26,7 @@ export default function Delete(){
         if(!window.confirm('This Action is irreversible, are you sure you wish to proceed?')){
             return;
         }
-        const response = await (await (fetch(`${url()}/api/deleteFile/${id}`, {
+        const response = await (await (fetch(`api/deleteFile/${id}`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },

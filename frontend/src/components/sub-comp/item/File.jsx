@@ -1,7 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import url from './../../utils/url';
 import Description from './description';
 
 export default function MainFile(){
@@ -13,7 +12,7 @@ export default function MainFile(){
       }, [id]);
 
     const getfile = () => {
-        fetch(`${url()}/api/item/${id}`, {
+        fetch(`api/item/${id}`, {
             headers: {
                 "Authorization": `Token ${key}`,
             }

@@ -1,7 +1,6 @@
 import {updateContext, tagContext} from './description';
 import { createRef, useContext } from 'react';
 import { motion } from 'framer-motion';
-import url from '../../utils/url';
 import { useParams } from 'react-router-dom';
 
 
@@ -25,7 +24,7 @@ export default function EditTags(){
 
     const sendTags = () => {
         const tags = tagsRef.current.value;
-        fetch(`${url()}/api/EditTags/${id}`, {
+        fetch(`api/EditTags/${id}`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },

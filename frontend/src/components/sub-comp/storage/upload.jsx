@@ -1,6 +1,5 @@
 import Form from 'react-bootstrap/Form'
 import { motion } from 'framer-motion'
-import url from './../../utils/url';
 import { createRef, useState } from 'react';
 import AlertDanger from '../../AlertDanger';
 import AlertSuccess from '../../AlertSuccess';
@@ -69,7 +68,7 @@ export default function Upload(props){
     //Check validity of formData
     const checkFormData = async (file) => {
         const filename = file.files[0].name
-        let response = await(await fetch(`${url()}/api/checkFormData`, {
+        let response = await(await fetch(`api/checkFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
@@ -85,7 +84,7 @@ export default function Upload(props){
     const sendFileData = async (file) => {
         let formData = new FormData(); //make form
         formData.append('file', file.files[0], file.files[0].name); //attach file to form
-        let response = await(await fetch(`${url()}/api/sendFileData`, {
+        let response = await(await fetch(`api/sendFileData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
@@ -99,7 +98,7 @@ export default function Upload(props){
     const sendFormData = async (tags, oldFileData, file) => {
         
         let tagsValue = tags.value;
-        let response = await(await fetch(`${url()}/api/sendFormData`, {
+        let response = await(await fetch(`api/sendFormData`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },

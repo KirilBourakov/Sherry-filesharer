@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import url from './../../utils/url';
 import EditTags from './EditTags'
 import EditShared from './EditShared'
 import Delete from './Delete'
@@ -11,7 +10,7 @@ export default function Edit(props){
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`${url()}/api/OwnerCheck/${id}`, {
+        fetch(`api/OwnerCheck/${id}`, {
             headers: {
                 "Authorization": `Token ${key}`,
             }

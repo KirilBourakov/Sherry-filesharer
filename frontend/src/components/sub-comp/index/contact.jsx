@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import AlertDanger from '../../AlertDanger';
-import url from './../../utils/url';
 
 export default function Contact(){
     const [dangerAlert, setDangerAlert] = useState(false);
@@ -23,7 +22,7 @@ export default function Contact(){
             return;
         }
         
-        const response = await (await fetch(`${url()}/api/sendmail`, {
+        const response = await (await fetch(`api/sendmail`, {
             method: 'POST',
             body: JSON.stringify({
                 EmailBack: email,

@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import{ Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
-import url from '../utils/url';
 
 export default function UserName() {
     const [user, setUser] = useState([])
     const nav = useNavigate()
     useEffect(() =>{
         const getUser = () =>{
-            fetch(`${url()}/api/getUser`, {
+            fetch(`api/getUser`, {
                 headers: {
                     "Authorization": `Token ${window.localStorage.getItem('key')}`,
                 }

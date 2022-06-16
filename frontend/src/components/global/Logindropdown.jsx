@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import url from './../utils/url';
 import Standeredlink from './standeredlink';
 
 export default function Logindropdown(){
@@ -9,7 +8,7 @@ export default function Logindropdown(){
         getfile();
       }, []);
     const getfile = () => {
-        fetch(`${url()}/api/getfiles/|<>|`, {
+        fetch(`api/getfiles/|<>|`, {
             headers: {
                 "Authorization": `Token ${key}`,
             }

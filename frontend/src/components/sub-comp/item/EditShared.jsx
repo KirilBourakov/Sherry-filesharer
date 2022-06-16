@@ -1,7 +1,6 @@
 import { createRef, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import url from '../../utils/url';
 import { shareContext, updateContext } from './description';
 import AlertDanger from "../../AlertDanger";
 import AlertSuccess from '../../AlertSuccess'
@@ -39,7 +38,7 @@ export default function EditShared(){
     const addUserRef = createRef()
 
     const changePrivate = async () => {
-        let response = await (await (fetch(`${url()}/api/ChangePrivate/${id}`, {
+        let response = await (await (fetch(`api/ChangePrivate/${id}`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
@@ -60,7 +59,7 @@ export default function EditShared(){
 
     const removeUser = async () => {
         const user = removeUserRef.current.value
-        let response = await (await (fetch(`${url()}/api/RemoveUser/${id}`, {
+        let response = await (await (fetch(`api/RemoveUser/${id}`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },
@@ -80,7 +79,7 @@ export default function EditShared(){
 
     const addUser = async () => {
         let user =  addUserRef.current.value
-        let response = await (await (fetch(`${url()}/api/addUser/${id}`, {
+        let response = await (await (fetch(`api/addUser/${id}`, {
             headers: {
                 "Authorization": `Token ${window.localStorage.getItem('key')}`,
             },

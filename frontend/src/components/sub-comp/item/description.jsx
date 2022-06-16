@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
-import url from './../../utils/url';
 import SharedWith from './SharedWith';
 import Tags from './Tags';
 import Owner from './owner';
@@ -21,7 +20,7 @@ export default function Description(){
       }, [id, update]);
 
     const getdata = () => {
-        fetch(`${url()}/api/item/userdata/${id}`, {
+        fetch(`api/item/userdata/${id}`, {
             headers: {
                 "Authorization": `Token ${key}`,
             }
