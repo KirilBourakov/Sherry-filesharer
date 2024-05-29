@@ -1,6 +1,6 @@
 # Sherry PDF File Sharing
 
-![Site demonstration](site.gif)
+[![Site demonstration](site.png)](https://youtu.be/Nst_Zb2JOuQ "Sherry Demonstration")
 
 ## About
 
