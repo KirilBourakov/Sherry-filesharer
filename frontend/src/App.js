@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 // componenets
 import SiteNavbar from './components/global/Navbar';
-import Index from './pages/index/index';
+import Index from './pages/home/index';
 import CreateAccount from './pages/create-account/create-account';
 import Login from './pages/login/login';
 import Storage from './pages/storage/storage';
