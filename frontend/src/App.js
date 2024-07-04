@@ -8,13 +8,13 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 // componenets
 import SiteNavbar from './components/global/Navbar';
-import Index from './pages/home/index';
-import CreateAccount from './pages/create-account/create-account';
-import Login from './pages/login/login';
-import Storage from './pages/storage/storage';
-import LogoutView from './pages/logout/logout-account';
-import Item from './pages/item/item';
-import PublicPath from './pages/public/publicRoute';
+import Home from './pages/home/';
+import CreateAccount from './pages/create-account';
+import Login from './pages/login';
+import Storage from './pages/storage';
+import LogoutView from './pages/logout';
+import Item from './pages/item';
+import PublicPath from './pages/public';
 import SharedWithMe from './pages/shared/SharedWithMe'
 
 export const UseKeyHook = createContext()
@@ -29,7 +29,7 @@ function App() {
           <Routes> 
 
             {/* idex */}
-            <Route path="/" element={<Index/>} />
+            <Route path="/" element={<Home/>} />
 
             {/* login/out */}
               <Route path="/Create-account" element={<CreateAccount/>}/>
