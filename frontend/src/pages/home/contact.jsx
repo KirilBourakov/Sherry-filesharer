@@ -1,7 +1,4 @@
 import { createRef, useState } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import AlertDanger from '../../components/AlertDanger';
 
 export default function Contact(){
@@ -71,33 +68,30 @@ export default function Contact(){
 
     return (
         <div className='col-7 mt-3 contact'>
-            <Form>
-            <Form.Group className="mb-3">
-                <Form.Label>Your email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" ref={emailRef}/>
-                <Form.Text className="text-muted">
+            <form>
+                <label>Your email address</label>
+                <control type="email" placeholder="Enter email" ref={emailRef}/>
+                <p className="text-muted">
                 This will only be used to respond to your email.
-                </Form.Text>
-            </Form.Group>
-
-            <Form.Group className="mb-3" >
-                <Form.Label>Subject</Form.Label>
-                <Form.Control type="text" placeholder="Subject" ref={subjectRef}/>
-            </Form.Group>
+                </p>
+        
+                <label>Subject</label>
+                <control type="text" placeholder="Subject" ref={subjectRef}/>
             
-            <FloatingLabel label="Comments">
-                <Form.Control
+            
+            <label label="Comments">
+                <form
                 as="textarea"
                 placeholder="Leave a comment here"
                 style={{ height: '250px' }}
                 ref={contentRef}
                 />
-            </FloatingLabel>
+            </label>
             
-            <Button variant="primary mt-2" type="button" onClick={sendemail}>
+            <button variant="primary mt-2" type="button" onClick={sendemail}>
                 Submit
-            </Button>
-            </Form>
+            </button>
+            </form>
 
             <AlertDanger 
                 text={dangerText} 

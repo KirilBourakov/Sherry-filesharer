@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import Spinner from 'react-bootstrap/Spinner'
 import { UseKeyHook } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
@@ -49,9 +48,9 @@ export default function Logout(){
                 </motion.h1>
             </div>
 
-            <Spinner animation="border" size="lg" variant="danger">
+            <div animation="border" size="lg" variant="danger">
                 <span className="visually-hidden">Logging out...</span>
-            </Spinner>
+            </div>
         </div>
     );
 };

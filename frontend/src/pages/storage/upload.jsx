@@ -1,4 +1,3 @@
-import Form from 'react-bootstrap/Form'
 import { motion } from 'framer-motion'
 import { createRef, useState } from 'react';
 import AlertDanger from '../../components/AlertDanger';
@@ -130,27 +129,27 @@ export default function Upload(props){
 
     return(
         <div className='d-flex flex-column'>
-            <Form>
-                <Form.Group className="mb-3">
-                    <Form.Label>Upload</Form.Label>
+            <form>
+                <div className="mb-3">
+                    <label>Upload</label>
                     <motion.div
                     whileHover={'hoverform'}
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                    <Form.Control type="file" size="lg" ref={fileRef}/>
+                    <control type="file" size="lg" ref={fileRef}/>
                     </motion.div>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Tags <small className="form-text">seperete tags with a space</small></Form.Label>
+                </div>
+                <div className="mb-3">
+                    <label>Tags <small className="form-text">seperete tags with a space</small></label>
                     <motion.div
                     whileHover={'hoverform'}
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                        <Form.Control type="text" size="lg" ref={tagRef} />
+                        <control type="text" size="lg" ref={tagRef} />
                     </motion.div>
-                </Form.Group>
+                </div>
                 <motion.button 
                 type='button'
                 className='btn btn-danger'
@@ -160,7 +159,7 @@ export default function Upload(props){
                 >
                 Upload
                 </motion.button>
-            </Form>
+            </form>
 
             <AlertDanger 
                 text={errorText} 

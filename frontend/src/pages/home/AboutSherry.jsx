@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import Table from 'react-bootstrap/Table';
 import AlertSuccess from './../../components/AlertSuccess';
 
 export default function AboutSherry() {
@@ -25,7 +24,7 @@ export default function AboutSherry() {
             whileTap={{ scale: 0.96 }} 
             onClick={copy}
             >
-                In all seriousness, Sharry is my CS50W final project.
+                Sharry is a file sharing and storage web project.
                 If you'd like to contact me, please reach out either using 
                 that form to the right, or by emailing me at <b> kirbou06012@gmail.com</b>,
                 which is my professional email.
@@ -42,7 +41,7 @@ export default function AboutSherry() {
             <p className='mt-2'>
                 The technolagies used in this website are the following:
             </p>
-            <Table striped bordered hover variant="dark">
+            <table>
                 <thead>
                     <tr>
                         <th>Frontend</th>
@@ -72,7 +71,7 @@ export default function AboutSherry() {
                     </tr>
                     
                 </tbody>
-            </Table>
+            </table>
             
 
              {/*copy alert */}

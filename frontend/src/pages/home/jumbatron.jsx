@@ -18,7 +18,7 @@ export default function Jumbatron() {
                     transition={{ ease: "easeOut", duration: 1 }} 
                     className="display-1 align-self-center cursor-nochange p-6 m-6"
                     >
-                    Sharry: pdf file sharer
+                    Sharry: cloud storage and file sharing project
                     </motion.h1>
                 </div>
                 <Link to={'/storage'}>
