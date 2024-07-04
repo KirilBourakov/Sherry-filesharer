@@ -7,7 +7,7 @@ import { createContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // componenets
-import SiteNavbar from './components/global/Navbar';
+import Navbar from './components/navbar';
 import Home from './pages/home/';
 import CreateAccount from './pages/create-account';
 import Login from './pages/login';
@@ -24,7 +24,7 @@ function App() {
   return (
     <UseKeyHook.Provider value={setkey}>
       <Router>
-        <SiteNavbar/>
+        <Navbar/>
         <div>
           <Routes> 
 
