@@ -15,7 +15,7 @@ import Storage from './pages/storage';
 import LogoutView from './pages/logout';
 import Item from './pages/item';
 import PublicPath from './pages/public';
-import SharedWithMe from './pages/shared/SharedWithMe'
+import SharedWithMe from './pages/shared/'
 
 export const UseKeyHook = createContext()
 
