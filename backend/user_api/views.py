@@ -27,6 +27,7 @@ class UserLogin(APIView):
             user = serializer.check(request.data)
             login(request, user)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'error': 'Something went wrong. Please check your information and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
         
 class UserLogout(APIView):
     def post(self, request):

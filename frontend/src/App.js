@@ -15,7 +15,8 @@ import Storage from './pages/storage';
 import LogoutView from './pages/logout';
 import Item from './pages/item';
 import PublicPath from './pages/public';
-import SharedWithMe from './pages/shared/'
+import SharedWithMe from './pages/shared/';
+import { CookieExists } from './scripts/cookies'
 
 export const UseKeyHook = createContext()
 
@@ -41,7 +42,7 @@ function App() {
             <Route path="/item/:id" element={key ? <Item /> : <Navigate to="/login"/>}/>
             <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
             <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
-            <Route path="/storage" element={key ? <Storage /> : <Navigate to="/login"/>} />
+            <Route path="/storage" element={CookieExists('sessionid') ? <Storage /> : <Navigate to="/login"/>} />
               
 
 

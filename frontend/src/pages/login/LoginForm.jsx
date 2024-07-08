@@ -3,7 +3,7 @@ import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
 import { UseKeyHook } from '../../App';
 import AlertDanger from '../../components/AlertDanger';
-
+import { getCookie, CookieExists } from '../../scripts/cookies'
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -28,31 +28,25 @@ export default function LoginForm(){
             return
         }
 
-        const response = await sendLoginData(username, password)
-        if(!checkResponse(response)){
-            alert(response.non_field_errors)
-            return;
-        }
-
-        window.localStorage.setItem('key', response.key);
-        KeyContext(response.key)
-        return nav("/storage"); 
-    }
-
-    const sendLoginData = async (username, password) => {
-        let response = await (await fetch(`dj-rest-auth/login/`, {
+        const response = await await (await fetch(`/user/login`, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
             },
+            credentials: 'include', 
             method: 'POST',
             body: JSON.stringify({
                 username: username,
-                email: '',
                 password: password
     
             })
         })).json();
-        return response
+
+        if (response.status === 200){
+            return nav("/storage"); 
+        }
+
+        alert(response.detail)
     }
 
     const checkResponse = (response) => {
@@ -69,6 +63,7 @@ export default function LoginForm(){
             changeAlertView(false);
         }, 3000);
     }
+    console.log(getCookie('sessionid'))
 
     return(
         <form>
