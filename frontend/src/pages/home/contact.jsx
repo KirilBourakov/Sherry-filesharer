@@ -70,18 +70,18 @@ export default function Contact(){
         <div className='col-7 mt-3 contact'>
             <form>
                 <label>Your email address</label>
-                <control type="email" placeholder="Enter email" ref={emailRef}/>
+                <input type="email" placeholder="Enter email" ref={emailRef}/>
                 <p className="text-muted">
                 This will only be used to respond to your email.
                 </p>
         
                 <label>Subject</label>
-                <control type="text" placeholder="Subject" ref={subjectRef}/>
+                <input type="text" placeholder="Subject" ref={subjectRef}/>
             
             
             <label label="Comments">
-                <form
-                as="textarea"
+                <input
+                type="textarea"
                 placeholder="Leave a comment here"
                 style={{ height: '250px' }}
                 ref={contentRef}

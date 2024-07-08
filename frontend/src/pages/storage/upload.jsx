@@ -137,7 +137,7 @@ export default function Upload(props){
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                    <control type="file" size="lg" ref={fileRef}/>
+                    <input type="file" size="lg" ref={fileRef}/>
                     </motion.div>
                 </div>
                 <div className="mb-3">
@@ -147,7 +147,7 @@ export default function Upload(props){
                     whileTap={'tapform'}
                     variants={variants}
                     >
-                        <control type="text" size="lg" ref={tagRef} />
+                        <input type="text" size="lg" ref={tagRef} />
                     </motion.div>
                 </div>
                 <motion.button 
