@@ -28,7 +28,7 @@ export default function LoginForm(){
             return
         }
 
-        const response = await await (await fetch(`/user/login`, {
+        const response = await fetch(`/user/login`, {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
@@ -40,20 +40,13 @@ export default function LoginForm(){
                 password: password
     
             })
-        })).json();
+        });
 
         if (response.status === 200){
             return nav("/storage"); 
         }
 
-        alert(response.detail)
-    }
-
-    const checkResponse = (response) => {
-        if (!response.key) {
-            return false
-        }
-        return true
+        return alert(response.detail)
     }
     
     const alert = (text) => {
@@ -63,7 +56,6 @@ export default function LoginForm(){
             changeAlertView(false);
         }, 3000);
     }
-    console.log(getCookie('sessionid'))
 
     return(
         <form>

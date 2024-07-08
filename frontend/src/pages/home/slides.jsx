@@ -2,7 +2,6 @@ import Slide from './slide'
 import slideData from './../../resources/data/slides.json'
 
 export default function Slides(){
-    console.log(slideData)
     let rotation = -1
     return(
         <div className='d-flex flex-column'>
