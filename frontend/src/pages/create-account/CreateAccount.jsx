@@ -27,7 +27,7 @@ export default function CreateAccount() {
         const passwordValue = passwordRef.current.value;
         const conpassValue = conpassRef.current.value;
 
-        const fieldIsEmpty = usernameValue === '' || emailValue === '' || passwordValue === '' || conpassValue === ''
+        const fieldIsEmpty = usernameValue === '' || passwordValue === '' || conpassValue === ''
         if (fieldIsEmpty){
             alert('All needed fields not filled.');
             return true;
@@ -72,7 +72,7 @@ export default function CreateAccount() {
 
             {/* email */}
             <div className="form-group">
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email">Email Address (Optional)</label>
                 <input autoComplete='off' type="email" className="form-control" ref={emailRef} placeholder="Enter email"/>
             </div>
 
