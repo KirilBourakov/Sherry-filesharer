@@ -15,6 +15,7 @@ class UserRegister(APIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(request.data)
             if user:
+                login(request, user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UserLogin(APIView):

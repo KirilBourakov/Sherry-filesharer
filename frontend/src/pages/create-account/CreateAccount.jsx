@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { createRef, useContext, useState } from 'react';
 import{ Link, useNavigate } from 'react-router-dom';
 import { UseKeyHook } from '../../App';
+import { getCookie } from '../../scripts/cookies'
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -25,56 +26,32 @@ export default function CreateAccount() {
         const emailValue = emailRef.current.value;
         const passwordValue = passwordRef.current.value;
         const conpassValue = conpassRef.current.value;
-        
-        if(checkValidity(usernameValue, emailValue, passwordValue, conpassValue)){
-            return;
-        }
-        await sendData(usernameValue, emailValue, passwordValue, conpassValue)
-        return;
-    }
 
-    const checkValidity = (usernameValue, emailValue, passwordValue, conpassValue) => {
-        if (usernameValue === '' || emailValue === '' || passwordValue === '' || conpassValue === ''){
+        const fieldIsEmpty = usernameValue === '' || emailValue === '' || passwordValue === '' || conpassValue === ''
+        if (fieldIsEmpty){
             alert('All needed fields not filled.');
             return true;
-        }else if (passwordValue !== conpassValue) {
+        }
+        if (passwordValue !== conpassValue) {
             alert('Passwords must match.');
             return true;
         };  
-    }
-
-    const sendData = async (usernameValue, emailValue, passwordValue, conpassValue) => {
-        let response = await (await fetch(`dj-rest-auth/registration/`, { 
+        let response = await fetch(`user/register`, { 
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
             },
+            credentials: 'include',
             method: 'POST',
             body: JSON.stringify({
                 username: usernameValue,
-                password1: passwordValue,
-                password2: conpassValue,
-                email: emailValue,
+                password: passwordValue,
             })
-        })).json();
-        return checkResponse(response)
-    }
-
-    const checkResponse = (response) => {
-        console.log(response);
-        if (response.key){
-            window.localStorage.setItem('key', response.key);
-            KeyContext(response.key)
-            return nav("/storage");
+        })
+        if (response.status === 201){
+            return nav("/storage"); 
         }
-        
-        for (const prop in response) {
-            if (Object.prototype.hasOwnProperty.call(response, prop)) {
-                alert(response[prop]);
-                return
-            }
-        }
-        alert('Something went wrong, make sure your information is valid, and try again later.')
-        return
+        return alert('Something went wrong, make sure your information is valid, and try again later.');
     }
  
     const alert = (text) => {
