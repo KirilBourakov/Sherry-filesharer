@@ -1,9 +1,8 @@
 //css
 import 'bootstrap/dist/css/bootstrap.css';
 
-
 //react & js
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // componenets
@@ -16,7 +15,6 @@ import LogoutView from './pages/logout';
 import Item from './pages/item';
 import PublicPath from './pages/public';
 import SharedWithMe from './pages/shared/';
-import { CookieExists } from './scripts/cookies'
 
 export const UseKeyHook = createContext()
 
@@ -29,24 +27,20 @@ function App() {
         <div>
           <Routes> 
 
-            {/* idex */}
+            {/* unprotected routes */}
             <Route path="/" element={<Home/>} />
 
             {/* login/out */}
-              <Route path="/Create-account" element={<CreateAccount/>}/>
-              <Route path="/login" element={<Login/>}/>
-              <Route path="/logout" element={<LogoutView/>}/>
+            <Route path="/Create-account" element={<CreateAccount/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/logout" element={<LogoutView/>}/>
 
-            {/* main routes */}
-            {/* <Route path="/storage" element={<Storage/>}/> */}
+            {/* protected routes */}
             <Route path="/item/:id" element={key ? <Item /> : <Navigate to="/login"/>}/>
             <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
             <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
             <Route path="/storage" element={<Storage />}/>
               
-
-
-
           </Routes>
         </div>
       </Router>
