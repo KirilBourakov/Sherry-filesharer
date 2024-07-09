@@ -31,7 +31,7 @@ export default function SharedWith(props){
         );
     };
     return(
-        <div className="ms-1 badge bg-danger text-wrap align-self-center">
+        <div className="ms-1 badge bg-primary text-wrap align-self-center">
             None
         </div>
     );

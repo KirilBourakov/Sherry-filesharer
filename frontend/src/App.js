@@ -1,5 +1,5 @@
 //css
-import 'bootstrap/dist/css/bootstrap.css';
+import './resources/css/custom.scss';
 
 //react & js
 import { createContext, useState } from 'react';

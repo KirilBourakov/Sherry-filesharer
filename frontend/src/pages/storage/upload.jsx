@@ -152,7 +152,7 @@ export default function Upload(props){
                 </div>
                 <motion.button 
                 type='button'
-                className='btn btn-danger'
+                className='btn btn-primary'
                 variants={variants}
                 whileHover='HoverSubmitFile'
                 onClick={(e) => {uploadFile(e)}}

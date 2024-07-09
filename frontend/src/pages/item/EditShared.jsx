@@ -123,7 +123,7 @@ export default function EditShared(){
                 onClick={changePrivate}
                 whileHover={'HoverDelete'}
                 variants={variants} 
-                className="btn btn-danger ms-2">
+                className="btn btn-primary ms-2">
                     Make Private
                 </motion.button>
             </div>
@@ -136,7 +136,7 @@ export default function EditShared(){
                 onClick={changePrivate}
                 whileHover={'HoverDelete'}
                 variants={variants} 
-                className="btn btn-outline-danger mb-1 me-1">
+                className="btn btn-outline-primary mb-1 me-1">
                     Make Public
                 </motion.button>
 
@@ -148,7 +148,7 @@ export default function EditShared(){
                         onClick={removeUser}
                         whileHover={'HoverDelete'}
                         variants={variants} 
-                        className="btn btn-outline-danger mb-1">
+                        className="btn btn-outline-primary mb-1">
                             Remove User
                         </motion.button>
                     </div>
@@ -177,7 +177,7 @@ export default function EditShared(){
                         onClick={addUser}
                         whileHover={'HoverDelete'}
                         variants={variants} 
-                        className="btn btn-outline-danger mb-1">
+                        className="btn btn-outline-primary mb-1">
                             Add user
                         </motion.button>
                     </div>

@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import jumbobackground from './../../resources/video/jumbobackground.mp4';
@@ -26,7 +25,7 @@ export default function Jumbatron() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 type="button" 
-                className="btn btn-danger me-3">To my Storage
+                className="btn btn-primary me-3">To my Storage
                 </motion.button>
                 </Link>
             </div>

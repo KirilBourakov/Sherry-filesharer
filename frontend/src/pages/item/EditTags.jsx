@@ -47,7 +47,7 @@ export default function EditTags(){
                     onClick={sendTags}
                     whileHover={'HoverDelete'}
                     variants={variants} 
-                    className="btn btn-danger ms-2 rounded">
+                    className="btn btn-primary ms-2 rounded">
                         Edit
                     </motion.button>
                 </div>

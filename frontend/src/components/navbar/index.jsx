@@ -21,7 +21,7 @@ export default function Navbar(){
                     
                     <HamburgerMenu>
                         <SearchBar/>
-                        <a className="ms-auto nav-link border border-danger rounded link-danger" href="/login">Login/Sign Up</a>
+                        <a className="ms-auto btn btn-primary rounded" href="/login">Login/Sign Up</a>
                     </HamburgerMenu>
                 </>
             }

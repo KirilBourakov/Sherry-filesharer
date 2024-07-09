@@ -92,7 +92,7 @@ export default function CreateAccount() {
             <div className='d-flex'>
                 <motion.button 
                 type="button" 
-                className="btn btn-danger mt-3 align-self-center" 
+                className="btn btn-primary mt-3 align-self-center" 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => {createaccount()}}>
