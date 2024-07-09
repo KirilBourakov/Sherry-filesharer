@@ -68,29 +68,34 @@ export default function Contact(){
 
     return (
         <div className='col-7 mt-3 contact'>
-            <form>
+            <form className='d-flex flex-column'>
+
                 <label>Your email address</label>
-                <input type="email" placeholder="Enter email" ref={emailRef}/>
                 <p className="text-muted">
-                This will only be used to respond to your email.
+                    This will only be used to respond to your email.
                 </p>
-        
+                <div className='input-group mb-3'>
+                    <input type="email" placeholder="Enter email" className='form-control' ref={emailRef}/>
+                </div>
+
                 <label>Subject</label>
-                <input type="text" placeholder="Subject" ref={subjectRef}/>
+                <div className='input-group mb-3'>
+                    <input type="text" placeholder="Subject" className='form-control' ref={subjectRef}/>
+                </div>
             
+                <label>Comments</label>
+                <div className='input-group mb-3'>
+                    <textarea
+                        className='form-control'
+                        placeholder="Leave a comment here"
+                        style={{ height: '250px' }}
+                        ref={contentRef}
+                    />
+                </div>
             
-            <label label="Comments">
-                <input
-                type="textarea"
-                placeholder="Leave a comment here"
-                style={{ height: '250px' }}
-                ref={contentRef}
-                />
-            </label>
-            
-            <button variant="primary mt-2" type="button" onClick={sendemail}>
-                Submit
-            </button>
+                <button class="btn btn-primary me-auto" type="submit" onClick={sendemail}>
+                    Submit
+                </button>
             </form>
 
             <AlertDanger 
