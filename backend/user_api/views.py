@@ -43,3 +43,11 @@ class GetUser(APIView):
         serializer = UserSerializer(request.user)
         print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CheckUser(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = [SessionAuthentication]
+    def get(self, request):
+        if request.user.is_authenticated:
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)

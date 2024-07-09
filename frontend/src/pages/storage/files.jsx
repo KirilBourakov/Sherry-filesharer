@@ -1,11 +1,15 @@
 import File from '../../components/multi/file'
 import { useEffect, useState } from 'react';
+import { checkLoginRedirect } from '../../scripts/authenticated'
+import { useNavigate } from 'react-router-dom'
 
 export default function Files(props){
     const [key, changekey] = useState(window.localStorage.getItem('key'));
     const [data, setdata] = useState(false);
+    const nav = useNavigate();
     
     useEffect((accesskey=key, parm=props.params) => {
+        checkLoginRedirect(nav)
         const fetchFiles = () => {
             fetch(`api/getfiles/${parm}`, {
                 headers: {
@@ -15,7 +19,7 @@ export default function Files(props){
             .then(response => response.json())
             .then(response => {setdata(response)})
         };
-        fetchFiles();
+        // fetchFiles();
     }, [props.update, props.params]);
     
     return(
