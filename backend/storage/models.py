@@ -9,8 +9,8 @@ class Directory(models.Model):
     name = models.TextField(blank=False)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_directories')
-    shared_with = models.ManyToManyField(User, related_name='shared_directories')
-    tags = models.CharField(max_length=100, default='')
+    shared_with = models.ManyToManyField(User, blank=True, related_name='shared_directories')
+    tags = models.CharField(max_length=100, blank=True, null=True)
     public = models.BooleanField(default=False)
 
 def upload_handler(instance, filename):
@@ -21,10 +21,10 @@ class File(models.Model):
     id = models.UUIDField(unique=True, primary_key=True, default=uuid.uuid4)
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_files')
-    shared_with = models.ManyToManyField(User, related_name='shared_files')
+    shared_with = models.ManyToManyField(User, blank=True, related_name='shared_files')
 
     file = models.FileField(upload_to=upload_handler)
     directory = models.ForeignKey(Directory, on_delete=models.CASCADE, null=True, blank=True)
 
-    tags = models.CharField(max_length=100, default='')
+    tags = models.CharField(max_length=100, blank=True, null=True)
     public = models.BooleanField(default=False)
