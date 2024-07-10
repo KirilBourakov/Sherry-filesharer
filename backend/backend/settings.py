@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-u-zp_axf-rhmn(4ntov8e&mtgka@l#!ma%&=6db#@13mqmt=k=
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+UPLOAD_ROOT = os.path.join('database', 'usercontent')
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
@@ -44,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'user_api.apps.UserApiConfig'
+    'user_api.apps.UserApiConfig',
+    'storage.apps.StorageConfig'
 ]
 
 MIDDLEWARE = [
