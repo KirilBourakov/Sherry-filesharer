@@ -9,6 +9,9 @@ class Directory(models.Model):
     name = models.TextField(blank=False)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    shared_with = models.ManyToManyField(User, related_name='shared')
+    tags = models.CharField(max_length=100, default='')
+    public = models.BooleanField(default=False)
 
 def upload_handler(instance, filename):
     ext = filename.split(".")[-1]
