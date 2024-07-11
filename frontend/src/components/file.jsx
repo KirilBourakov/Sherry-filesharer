@@ -16,7 +16,6 @@ const variants = {
 
 
 export default function File(props){
-    const [filename, changefilename] = useState(props.content.split('/')[props.content.split('/').length-1].replaceAll('%20', ' '));
     const nav = useNavigate()
 
     const gotofile = () => {
@@ -33,7 +32,7 @@ export default function File(props){
                 <div className="align-self-center">
                     <MdOutlinePictureAsPdf size={30}/>
                 </div>
-                <h4 className="align-self-center ms-auto mb-0">{filename}</h4>
+                <h4 className="align-self-center ms-auto mb-0">{props.filename}</h4>
             </motion.div>
     );
 };

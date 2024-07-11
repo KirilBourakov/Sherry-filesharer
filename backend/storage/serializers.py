@@ -5,14 +5,14 @@ import os
 class DirectoryContentFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ['filename',]
+        fields = ['filename', 'id']
 
 class DirectoryContentDirectorySerializer(serializers.ModelSerializer):
     directory_name = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
     class Meta:
         model = Directory
-        fields = ['path', 'directory_name']
+        fields = ['path', 'directory_name', 'id']
 
     def get_directory_name(self, obj):
         return obj.name.strip('/').split('/')[-1]

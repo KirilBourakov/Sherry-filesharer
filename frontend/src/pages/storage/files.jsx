@@ -1,39 +1,49 @@
-import File from '../../components/multi/file'
+import File from '../../components/file'
 import { useEffect, useState } from 'react';
 import { checkLoginRedirect } from '../../scripts/authenticated'
 import { useNavigate } from 'react-router-dom'
+import { getCookie } from '../../scripts/cookies'
 
-export default function Files(props){
-    const [key, changekey] = useState(window.localStorage.getItem('key'));
-    const [data, setdata] = useState(false);
+export default function Contents(props){
+    const [contents, setContents] = useState({});
     const nav = useNavigate();
     
-    useEffect((accesskey=key, parm=props.params) => {
+    useEffect((parm=props.params) => {
         checkLoginRedirect(nav)
-        const fetchFiles = () => {
-            fetch(`api/getfiles/${parm}`, {
+        const fetchContents = () => {
+            fetch(`/storage/getDirectoryContents`, {
                 headers: {
-                    "Authorization": `Token ${accesskey}`,
-                }
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                credentials: 'include', 
+                method: 'get',
             })
             .then(response => response.json())
-            .then(response => {setdata(response)})
+            .then(response => {setContents(response); console.log(response);})
         };
-        // fetchFiles();
+        fetchContents();
     }, [props.update, props.params]);
     
     return(
         <div className="container">
+            <div className='row'>
+                {contents.directories &&
+                    contents.directories.map(d => {
+                        return(
+                            <div key={d.id}>{d.directory_name}</div>
+                        )
+                    })
+                }
+            </div>
             <div className="row">
-                
-                {data &&
-                    data.map(d => {
+                {contents.files &&
+                    contents.files.map(d => {
                     return(
-                        <div key={d.id} className='pt-1 ps-1 col-6 col-md-4'>
-                            <File content={d.file} fileid={d.id} />
-                        </div>
-                
-                    )
+                            <div key={d.id} className='pt-1 ps-1 col-6 col-md-4'>
+                                <File filename={d.filename} fileid={d.id} />
+                            </div>
+                        )
                     })
                 }
                  

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import File from '../../components/multi/file';
+import File from '../../components/file';
 import Search from '../../components/multi/search';
 
 export default function Public(){
