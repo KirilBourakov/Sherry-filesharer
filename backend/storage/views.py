@@ -11,22 +11,19 @@ class DirectoryContents(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication]
     def get(self, request):
-        # TODO: Make shared content it's own directory 
-        # Maybe make it so that creating a user makes a / and shared with me directory for them
         user = request.user
-        requested_directory = request.GET.get('path', None)
+        requested_directory = request.GET.get('path', '/')
 
-        if requested_directory is None:
-            subdirectories = Directory.objects.filter(parent__isnull=True)
+        if requested_directory == '/Shared_With_Me/':
+            subdirectories = Directory.objects.filter(shared_with=user) 
         else:
-            subdirectories = Directory.objects.filter(parent__name=requested_directory)
-        
-        subdirectories = subdirectories.filter(owner=user) | subdirectories.filter(shared_with=user) 
-        
+            subdirectories = Directory.objects.filter(owner=user).filter(parent__name=requested_directory)
         directory_serializer = DirectoryContentDirectorySerializer(subdirectories, many=True)
-        
-        files = File.objects.filter(directory__name=requested_directory)
-        files = files.filter(author=user) | files.filter(shared_with=user)
+
+        if requested_directory == '/Shared_With_Me/':
+            files = File.objects.filter(shared_with=user)
+        else:
+            files = File.objects.filter(author=user).filter(directory__name=requested_directory)
         file_serializer = DirectoryContentFileSerializer(files, many=True)
 
         data = {

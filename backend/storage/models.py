@@ -13,11 +13,15 @@ class Directory(models.Model):
     tags = models.CharField(max_length=100, blank=True, null=True)
     public = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.owner}{self.name}"
+
     class Meta:
         unique_together = [['parent', 'name']]
 
 def upload_handler(instance, filename):
     ext = filename.split(".")[-1]
+    instance.filename = filename
     filename = f"{instance.author.username}/{instance.id}.{ext}"
     return os.path.join(settings.UPLOAD_ROOT, filename)
 class File(models.Model):
@@ -27,7 +31,8 @@ class File(models.Model):
     shared_with = models.ManyToManyField(User, blank=True, related_name='shared_files')
 
     file = models.FileField(upload_to=upload_handler)
-    directory = models.ForeignKey(Directory, on_delete=models.CASCADE, null=True, blank=True)
+    filename = models.CharField(max_length=255, blank=True, null=True)
+    directory = models.ForeignKey(Directory, on_delete=models.CASCADE, null=False, blank=False)
 
     tags = models.CharField(max_length=100, blank=True, null=True)
     public = models.BooleanField(default=False)
