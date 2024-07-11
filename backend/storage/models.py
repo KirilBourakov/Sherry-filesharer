@@ -13,6 +13,9 @@ class Directory(models.Model):
     tags = models.CharField(max_length=100, blank=True, null=True)
     public = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = [['parent', 'name']]
+
 def upload_handler(instance, filename):
     ext = filename.split(".")[-1]
     filename = f"{instance.author.username}/{instance.id}.{ext}"

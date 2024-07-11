@@ -12,6 +12,7 @@ class DirectoryContents(APIView):
     authentication_classes = [SessionAuthentication]
     def get(self, request):
         # TODO: Make shared content it's own directory 
+        # Maybe make it so that creating a user makes a / and shared with me directory for them
         user = request.user
         requested_directory = request.GET.get('path', None)
 
