@@ -4,7 +4,8 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from knox.views import LoginView as KnoxLoginView
 
 # Create your views here.
 class UserRegister(APIView):
@@ -18,17 +19,8 @@ class UserRegister(APIView):
                 login(request, user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class UserLogin(APIView):
-    permission_classes = [permissions.AllowAny]
-    authentication_classes = [SessionAuthentication]
-    def post(self, request):
-        # add validation
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.check(request.data)
-            login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'error': 'Something went wrong. Please check your information and try again.'}, status=status.HTTP_401_UNAUTHORIZED)
+class UserLogin(KnoxLoginView):
+    authentication_classes = [BasicAuthentication]
         
 class UserLogout(APIView):
     def post(self, request):

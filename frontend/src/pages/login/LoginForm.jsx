@@ -33,7 +33,6 @@ export default function LoginForm(){
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            credentials: 'include', 
             method: 'POST',
             body: JSON.stringify({
                 username: username,
@@ -41,10 +40,10 @@ export default function LoginForm(){
     
             })
         });
-
-        if (response.status === 200){
-            return nav("/storage"); 
-        }
+        console.log(response.status, response.json())
+        // if (response.status === 200){
+        //     return nav("/storage"); 
+        // }
 
         return alert(response.detail)
     }

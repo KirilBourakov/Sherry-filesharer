@@ -36,12 +36,11 @@ export default function CreateAccount() {
             alert('Passwords must match.');
             return true;
         };  
-        let response = await fetch(`user/register`, { 
+        let response = await fetch(`user/auth/register`, { 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            credentials: 'include',
             method: 'POST',
             body: JSON.stringify({
                 username: usernameValue,
