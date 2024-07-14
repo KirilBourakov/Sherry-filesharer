@@ -3,7 +3,7 @@ import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
 import { UseKeyHook } from '../../App';
 import AlertDanger from '../../components/AlertDanger';
-import { getCookie, CookieExists } from '../../scripts/cookies'
+import { login } from './../../scripts/authentication'
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -19,7 +19,7 @@ export default function LoginForm(){
     const usernameRef = createRef()
     const passwordRef = createRef()
 
-    const login = async () => {
+    const submit = async () => {
         const username = usernameRef.current.value
         const password = passwordRef.current.value
         
@@ -27,23 +27,11 @@ export default function LoginForm(){
             alert('Not all fields are filled.')
             return
         }
+        let response = await login(username, password)
 
-        const response = await fetch(`/user/login`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                username: username,
-                password: password
-    
-            })
-        });
-        console.log(response.status, response.json())
-        // if (response.status === 200){
-        //     return nav("/storage"); 
-        // }
+        if (response.status === 200){
+            return nav("/storage"); 
+        }
 
         return alert(response.detail)
     }
@@ -77,7 +65,7 @@ export default function LoginForm(){
                 className="btn btn-primary mt-3 align-self-center" 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={login}>
+                onClick={submit}>
                     Login
                 </motion.button>
 

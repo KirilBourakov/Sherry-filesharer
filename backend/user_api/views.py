@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model, login, logout
-from .serializers import UserRegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import UserRegisterSerializer, UserSerializer
 from rest_framework import permissions, status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from knox.views import LoginView as KnoxLoginView
@@ -38,8 +37,5 @@ class GetUser(APIView):
     
 class CheckUser(APIView):
     permission_classes = [permissions.AllowAny]
-    authentication_classes = [SessionAuthentication]
     def get(self, request):
-        if request.user.is_authenticated:
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_200_OK)

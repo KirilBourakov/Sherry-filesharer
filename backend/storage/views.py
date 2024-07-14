@@ -9,7 +9,6 @@ from rest_framework import permissions, status
 # Create your views here.
 class DirectoryContents(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
     def get(self, request):
         user = request.user
         requested_directory = request.GET.get('path', '/')

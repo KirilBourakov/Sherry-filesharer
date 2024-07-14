@@ -1,22 +1,21 @@
 import File from '../../components/file'
 import { useEffect, useState } from 'react';
-import { checkLoginRedirect } from '../../scripts/authenticated'
+import { checkLoginAndRedirect } from '../../scripts/authentication'
 import { useNavigate } from 'react-router-dom'
-import { getCookie } from '../../scripts/cookies'
+import { getToken } from './../../scripts/authentication'
 
 export default function Contents(props){
     const [contents, setContents] = useState({});
     const nav = useNavigate();
     
     useEffect((parm=props.params) => {
-        checkLoginRedirect(nav)
+        checkLoginAndRedirect(nav)
         const fetchContents = () => {
             fetch(`/storage/getDirectoryContents`, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Authorization': `Token ${getToken().token}`,
                 },
-                credentials: 'include', 
                 method: 'get',
             })
             .then(response => response.json())
