@@ -67,6 +67,11 @@ export default function Upload(props){
             method: 'POST',
             body: formData,
         })
+        if (response.status === 201){
+            props.update()
+        } else {
+            alertError('Something went wrong, please try again later')
+        }
     }
 
     const alertError = (text) => {
