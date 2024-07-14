@@ -30,3 +30,8 @@ class DirectoryContents(APIView):
             'directories': directory_serializer.data
         }
         return Response(data, status=status.HTTP_200_OK)
+    
+class UploadFile(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request):
+        return Response(status=status.HTTP_200_OK)

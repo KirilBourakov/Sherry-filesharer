@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { createRef, useState } from 'react';
 import AlertDanger from '../../components/AlertDanger';
 import AlertSuccess from '../../components/AlertSuccess';
+import { getToken } from '../../scripts/authentication';
 
 const variants = {
     HoverSubmitFile:{
@@ -40,78 +41,7 @@ export default function Upload(props){
     const [successView, setSuccessView] = useState(false);
     const [successText, setSuccessText] = useState('')
 
-    const uploadFile = async (e) => {
-        const file = fileRef.current
-        const tags = tagRef.current
-        const check = await checkFormData(file)
-        if (check.exists === false){
-            if (!window.confirm('This file apears to exist. If you continue, it will be overwritten')){
-                file.value = ''
-                tags.value = ''
-                return;
-            }
-        }
-        if (check.status) {
-            alertError(check.status)
-            return;
-        }
-        const response = await sendFileData(file);
-        const confirm = await sendFormData(tags, response, file);
-        alertSuccess(confirm)
-        file.value = ''
-        tags.value = ''
-        props.update()
-        return
-    }
-
-    //Check validity of formData
-    const checkFormData = async (file) => {
-        const filename = file.files[0].name
-        let response = await(await fetch(`api/checkFormData`, {
-            headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
-            },
-            method: 'PUT',
-            body: JSON.stringify({
-                filename: filename,
-            })
-        })).json();
-        return response
-    }
-
-    // send raw file bytes
-    const sendFileData = async (file) => {
-        let formData = new FormData(); //make form
-        formData.append('file', file.files[0], file.files[0].name); //attach file to form
-        let response = await(await fetch(`api/sendFileData`, {
-            headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
-            },
-            method: 'POST',
-            body: formData
-        })).json();
-       return response
-    }
-
-    // send tags and filename
-    const sendFormData = async (tags, oldFileData, file) => {
-        
-        let tagsValue = tags.value;
-        let response = await(await fetch(`api/sendFormData`, {
-            headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                tags: tagsValue,
-                filename: file.files[0].name,
-                pk: oldFileData.pk,
-                TempName: oldFileData.temp_name
-            })
-        })).json();
-        return response.msg
-    }
-
+    
     // alert user about upload status
     const alertSuccess = (text) => {
         setSuccessText(text)
@@ -119,6 +49,19 @@ export default function Upload(props){
         setTimeout(() => { setSuccessView(false); }, 5000);
         return
     } 
+
+    const uploadFile = async (e) => {
+        e.preventDefault()
+
+        const response = await fetch('/storage/upload', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${getToken().token}`,
+            },
+            method: 'POST',
+        })
+        console.log(response.status)
+    }
 
     const alertError = (text) => {
         setErrorText(text)
