@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Files from './files';
 import Upload from './upload';
 import Search from '../../components/multi/search';
+import { getToken } from "../../scripts/authentication";
 
 export default function Main(){
     const [update, forceupdate] = useState(0);
     const [search, changesearch ]= useState('|<>|');
+    const [directory, changeDirectory] = useState(null)
+
     const updateView = () => {
         forceupdate(update + 1)
         return
@@ -24,7 +27,7 @@ export default function Main(){
                     <Files update={update} params={search}/>
                 </div>
                 <div className="row mt-3">
-                    <Upload update={updateView}/>
+                    <Upload update={updateView} pathId={directory}/>
                 </div>
             </div>
         </motion.div>

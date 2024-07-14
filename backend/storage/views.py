@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer
+from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer
 from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
-from rest_framework import permissions, status
+from rest_framework import permissions, status, viewsets, parsers
 
 # Create your views here.
 class DirectoryContents(APIView):
@@ -31,7 +31,23 @@ class DirectoryContents(APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
     
+class DirectoryId(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        directory = Directory.objects.get(owner=request.user, name=request.GET.get('path', '/'))
+        return Response({
+            'id': directory.id
+        }, status=status.HTTP_200_OK)
+
 class UploadFile(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser]
     def post(self, request):
-        return Response(status=status.HTTP_200_OK)
+        print(request.data)
+        serializer = UploadSerializer(data=request.data, context={'request': request})
+        print(serializer)
+        if serializer.is_valid():
+            print('-----------------------------------')
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
     path('getDirectoryContents', views.DirectoryContents.as_view(), name='directoryContents'),
-    path('upload', views.UploadFile.as_view(), name='upload')
+    path('getDirectoryId', views.DirectoryId.as_view(), name='DirectoryId'),
+    path('upload', views.UploadFile.as_view(), name='upload'),
 ]

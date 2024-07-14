@@ -53,14 +53,20 @@ export default function Upload(props){
     const uploadFile = async (e) => {
         e.preventDefault()
 
+        const formData = new FormData();
+        const file = fileRef.current.files[0];
+        formData.append('file', file)
+        formData.append('filename', file.name)
+        formData.append('directory', '/')
+        formData.append('tags', tagRef.current.value)
+
         const response = await fetch('/storage/upload', {
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Token ${getToken().token}`,
             },
             method: 'POST',
+            body: formData,
         })
-        console.log(response.status)
     }
 
     const alertError = (text) => {

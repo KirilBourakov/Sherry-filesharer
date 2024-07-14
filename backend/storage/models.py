@@ -14,7 +14,7 @@ class Directory(models.Model):
     public = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.owner}{self.name}"
+        return f"{self.owner}{self.name} ({self.id})"
 
     class Meta:
         unique_together = [['parent', 'name']]
