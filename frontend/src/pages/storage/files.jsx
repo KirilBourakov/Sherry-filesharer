@@ -1,4 +1,5 @@
 import File from '../../components/file'
+import Folder from '../../components/folder';
 import { useEffect, useState } from 'react';
 import { checkLoginAndRedirect } from '../../scripts/authentication'
 import { useNavigate } from 'react-router-dom'
@@ -30,18 +31,16 @@ export default function Contents(props){
                 {contents.directories &&
                     contents.directories.map(d => {
                         return(
-                            <div key={d.id}>{d.directory_name}</div>
+                            <Folder key={d.id} name={d.directory_name} path={d.path}/>
                         )
                     })
                 }
             </div>
-            <div className="row">
+            <div className='row'>
                 {contents.files &&
                     contents.files.map(d => {
                     return(
-                            <div key={d.id} className='pt-1 ps-1 col-6 col-md-4'>
-                                <File filename={d.filename} fileid={d.id} />
-                            </div>
+                            <File key={d.id} filename={d.filename} fileid={d.id} />
                         )
                     })
                 }

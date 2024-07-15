@@ -25,6 +25,7 @@ export default function File(props){
 
 
     return(
+        <div className='pt-1 ps-1 col-6 col-md-4'>
             <motion.div 
             whileHover={'HoverFile'}
             variants={variants}
@@ -35,6 +36,7 @@ export default function File(props){
                 </div>
                 <h4 className="align-self-center ms-auto mb-0">{props.filename}</h4>
             </motion.div>
+        </div>
     );
 };
 
