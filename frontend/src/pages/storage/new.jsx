@@ -6,15 +6,25 @@ import { MdUploadFile, MdOutlineDriveFolderUpload } from "react-icons/md";
 export default function New(){
     const [dropdown, setDropdown] = useState(false)
 
+    const handleHover = (e) => {
+        e.currentTarget.classList.remove('bg-primary');
+        e.currentTarget.classList.add('bg-primary-dark');
+    };
+
+    const handleLeave = (e) => {
+        e.currentTarget.classList.remove('bg-primary-dark');
+        e.currentTarget.classList.add('bg-primary');
+    };
+
     return(
         <IconContext.Provider value={{ className: "text-light" }}>
-            <div className="m-2 footer position-fixed end-0 bottom-0" style={{ end: '20px' }}>
-                <div className="bg-primary rounded-circle shadow" onClick={() => {setDropdown(!dropdown)}}>
-                    <MdOutlineAdd size={85}/>
+            <div className="m-2 footer position-fixed bottom-0" style={{ right: 'calc(25px)' }}>
+                <div className="bg-primary rounded-circle shadow" onClick={() => {setDropdown(!dropdown)}} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
+                    <MdOutlineAdd size={75}/>
                 </div>
                 <div className="position-absolute bottom-100 start-50 translate-middle-x rounded p-2 text-light">
                     {dropdown &&
-                        <div class="bg-primary position-relative rounded-2">
+                        <div class="position-relative bg-primary rounded-2 shadow">
                             <NewButton text={'Upload a file'}>
                                 <MdUploadFile size={50}/>
                             </NewButton>
@@ -31,8 +41,18 @@ export default function New(){
 }
 
 function NewButton(props){
+    const handleHover = (e) => {
+        e.currentTarget.classList.add('bg-primary-dark');
+        e.currentTarget.classList.add('rounded-2');
+    };
+
+    const handleLeave = (e) => {
+        e.currentTarget.classList.remove('bg-primary-dark');
+        e.currentTarget.classList.add('rounded-2');
+    };
+
     return(
-        <div className="p-1 d-flex">
+        <div className="p-1 d-flex" style={{ cursor: 'pointer' }} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
             <div className='p-1'>
                 {props.children}
             </div>
