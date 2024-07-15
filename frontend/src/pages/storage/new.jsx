@@ -3,7 +3,7 @@ import { MdOutlineAdd } from "react-icons/md";
 import { IconContext } from "react-icons";
 import { MdUploadFile, MdOutlineDriveFolderUpload } from "react-icons/md";
 
-export default function New(){
+export default function New(props){
     const [dropdown, setDropdown] = useState(false)
 
     const handleHover = (e) => {
@@ -25,7 +25,7 @@ export default function New(){
                 <div className="position-absolute bottom-100 start-50 translate-middle-x rounded p-2 text-light">
                     {dropdown &&
                         <div class="position-relative bg-primary rounded-2 shadow">
-                            <NewButton text={'Upload a file'}>
+                            <NewButton text={'Upload a file'} action={() => {props.showUpload(true)}}>
                                 <MdUploadFile size={50}/>
                             </NewButton>
                             <NewButton text={'Create Folder'}>
@@ -52,7 +52,7 @@ function NewButton(props){
     };
 
     return(
-        <div className="p-1 d-flex" style={{ cursor: 'pointer' }} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
+        <div className="p-1 d-flex" style={{ cursor: 'pointer' }} onMouseEnter={handleHover} onMouseLeave={handleLeave} onClick={props.action}>
             <div className='p-1'>
                 {props.children}
             </div>
