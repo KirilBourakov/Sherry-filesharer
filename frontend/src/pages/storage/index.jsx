@@ -18,7 +18,6 @@ export default function Main(){
     if (path === undefined){
         path = '/'
     } else {
-        
         path = '/' + path
     }
     const updateView = () => {
@@ -48,7 +47,7 @@ export default function Main(){
                             <Search changesearch={changesearch} />
                         </div>
                         <div className="row mt-3">
-                            <Content update={update} params={search} directory={path}/>
+                            <Content update={update} params={search} directory={path} forceupdate={updateView}/>
                         </div>
                     </div>
                     {showUpload &&
