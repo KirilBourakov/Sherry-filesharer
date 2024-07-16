@@ -4,18 +4,31 @@ import Files from './files';
 import Upload from './upload';
 import Search from '../../components/multi/search';
 import New from './new'
+import CreateDirectory from "./createDirectory";
 import { getToken } from "../../scripts/authentication";
 
 export default function Main(){
     const [update, forceupdate] = useState(0);
     const [search, changesearch ]= useState('|<>|');
-    const [directory, changeDirectory] = useState(null)
+    const [directory, changeDirectory] = useState('/')
     const [showUpload, changeShowUpload] = useState(false)
+    const [showNewDirectory, changeShowNewDirectory] = useState(false)
 
     const updateView = () => {
         forceupdate(update + 1)
         return
     }
+
+    const uploadPopup = () => {
+        if (showNewDirectory) changeShowNewDirectory(false)
+        changeShowUpload(!showUpload)
+        
+    }
+    const directoryPopup = () => {
+        if (showUpload) changeShowUpload(false)
+        changeShowNewDirectory(!showNewDirectory) 
+    }
+
     return(
         <>
             <motion.div
@@ -32,11 +45,14 @@ export default function Main(){
                         </div>
                     </div>
                     {showUpload &&
-                        <Upload update={updateView} pathId={directory} showUpload={changeShowUpload}/>
+                        <Upload update={updateView} directory={directory} show={uploadPopup}/>
+                    }
+                    {showNewDirectory &&
+                        <CreateDirectory update={updateView} directory={directory} show={directoryPopup}/>
                     }
                 </div>
             </motion.div>
-            <New showUpload={changeShowUpload}/>
+            <New uploadPopup={uploadPopup} directoryPopup={directoryPopup}/>
         </>
     );
 };

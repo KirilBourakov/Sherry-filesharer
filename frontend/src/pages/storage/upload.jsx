@@ -58,7 +58,7 @@ export default function Upload(props){
         const file = fileRef.current.files[0];
         formData.append('file', file)
         formData.append('filename', file.name)
-        formData.append('directory', '/')
+        formData.append('directory', props.directory)
         formData.append('tags', tagRef.current.value)
         const token = getToken().token
         const xhr = new XMLHttpRequest();
@@ -106,7 +106,7 @@ export default function Upload(props){
     } 
 
     return(
-        <div className="position-absolute start-0 top-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={() => {props.showUpload(false)}}>
+        <div className="position-absolute start-0 top-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={props.show}>
             <div className="text-center bg-primary p-5 pt-3 border border-primary border-5 rounded-3 text-light" onClick={(e) => { e.stopPropagation(); }}>
                     <h1>Upload File</h1>
                     <form className='d-flex flex-column'>
