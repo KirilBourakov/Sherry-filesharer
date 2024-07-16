@@ -15,11 +15,14 @@ export default function Main(){
     const [showNewDirectory, changeShowNewDirectory] = useState(false)
 
     let path = useParams()['*']
+
     if (path === undefined){
         path = '/'
     } else {
         path = '/' + path
+        if (path.slice(-1) === '/') path = path.slice(0,-1)
     }
+
     const updateView = () => {
         forceupdate(update + 1)
         return
