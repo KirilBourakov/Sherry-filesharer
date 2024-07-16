@@ -21,7 +21,7 @@ class DirectoryContentDirectorySerializer(serializers.ModelSerializer):
     def get_path(self, obj):
         return obj.name
     
-class CreateDirectoryContents(serializers.ModelSerializer):
+class CreateDirectorySerializer(serializers.ModelSerializer):
     parent = serializers.CharField(max_length=100)
 
     class Meta:
@@ -32,6 +32,11 @@ class CreateDirectoryContents(serializers.ModelSerializer):
         user = self.context['request'].user
         parent = get_object_or_404(Directory, owner=user, name=value)
         return parent
+    
+    def validate_name(self, value):
+        if "/" in value or type(value) != 'string':
+            raise serializers.ValidationError("Invalid name")
+        return value
     
     def create(self, validated_data):  
         user = self.context['request'].user

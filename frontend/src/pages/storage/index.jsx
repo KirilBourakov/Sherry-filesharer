@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useParams } from 'react-router-dom'; 
 import { useState, useEffect } from "react";
-import Files from './files';
+import Content from './contents';
 import Upload from './upload';
 import Search from '../../components/multi/search';
 import New from './new'
@@ -18,9 +18,9 @@ export default function Main(){
     if (path === undefined){
         path = '/'
     } else {
-        path = '/' + path.slice(0, -1); 
+        
+        path = '/' + path
     }
-
     const updateView = () => {
         forceupdate(update + 1)
         return
@@ -48,7 +48,7 @@ export default function Main(){
                             <Search changesearch={changesearch} />
                         </div>
                         <div className="row mt-3">
-                            <Files update={update} params={search}/>
+                            <Content update={update} params={search} directory={path}/>
                         </div>
                     </div>
                     {showUpload &&

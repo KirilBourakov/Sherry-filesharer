@@ -93,7 +93,7 @@ export default function Contact(){
                     />
                 </div>
             
-                <button class="btn btn-primary me-auto" type="submit" onClick={sendemail}>
+                <button className="btn btn-primary me-auto" type="submit" onClick={sendemail}>
                     Submit
                 </button>
             </form>

@@ -10,6 +10,10 @@ export default function CreateDirectory(props){
     const [errorText, setErrorText] = useState('')
 
     const submit = async () => {
+        if (nameRef.current.value.includes('/')){
+            alertError('Folder name may not include /')
+            return
+        }
         let response = await fetch(`/storage/directory`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -17,7 +21,7 @@ export default function CreateDirectory(props){
             },
             method: 'POST',
             body: JSON.stringify({
-                'name': nameRef.current.value,
+                'name': '/' + nameRef.current.value,
                 'tags': tagRef.current.value,
                 'parent': props.directory
             })

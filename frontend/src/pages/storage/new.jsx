@@ -24,14 +24,14 @@ export default function New(props){
                 </div>
                 <div className="position-absolute bottom-100 start-50 translate-middle-x rounded p-2 text-light">
                     {dropdown &&
-                        <div class="position-relative bg-primary rounded-2 shadow">
+                        <div className="position-relative bg-primary rounded-2 shadow">
                             <NewButton text={'Upload a file'} action={props.uploadPopup}>
                                 <MdUploadFile size={50}/>
                             </NewButton>
                             <NewButton text={'Create Folder'} action={props.directoryPopup}>
                                 <MdOutlineDriveFolderUpload size={50}/>
                             </NewButton>
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#D2042D" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" className="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#D2042D" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
                         </div>
                     }
                 </div>

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectoryContents
+from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer
 from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
@@ -32,7 +32,7 @@ class DirectoryAPI(APIView):
         return Response(data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = CreateDirectoryContents(data=request.data, context={'request': request})
+        serializer = CreateDirectorySerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
