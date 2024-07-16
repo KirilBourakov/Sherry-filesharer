@@ -12,7 +12,7 @@ import CreateAccount from './pages/create-account';
 import Login from './pages/login';
 import Storage from './pages/storage';
 import LogoutView from './pages/logout';
-import Item from './pages/item';
+import Item from './pages/preview';
 import PublicPath from './pages/public';
 import SharedWithMe from './pages/shared/';
 
