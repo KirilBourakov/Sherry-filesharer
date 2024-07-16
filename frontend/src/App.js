@@ -40,6 +40,7 @@ function App() {
             <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
             <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
             <Route path="/storage" element={<Storage />}/>
+            <Route path="/storage/*" element={<Storage />}/>
               
           </Routes>
         </div>

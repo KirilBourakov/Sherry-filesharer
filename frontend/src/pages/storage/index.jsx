@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useParams } from 'react-router-dom'; 
 import { useState, useEffect } from "react";
 import Files from './files';
 import Upload from './upload';
@@ -10,9 +11,15 @@ import { getToken } from "../../scripts/authentication";
 export default function Main(){
     const [update, forceupdate] = useState(0);
     const [search, changesearch ]= useState('|<>|');
-    const [directory, changeDirectory] = useState('/')
     const [showUpload, changeShowUpload] = useState(false)
     const [showNewDirectory, changeShowNewDirectory] = useState(false)
+
+    let path = useParams()['*']
+    if (path === undefined){
+        path = '/'
+    } else {
+        path = '/' + path.slice(0, -1); 
+    }
 
     const updateView = () => {
         forceupdate(update + 1)
@@ -45,10 +52,10 @@ export default function Main(){
                         </div>
                     </div>
                     {showUpload &&
-                        <Upload update={updateView} directory={directory} show={uploadPopup}/>
+                        <Upload update={updateView} directory={path} show={uploadPopup}/>
                     }
                     {showNewDirectory &&
-                        <CreateDirectory update={updateView} directory={directory} show={directoryPopup}/>
+                        <CreateDirectory update={updateView} directory={path} show={directoryPopup}/>
                     }
                 </div>
             </motion.div>
