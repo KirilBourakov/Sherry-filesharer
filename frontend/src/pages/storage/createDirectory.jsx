@@ -1,10 +1,47 @@
 import { createRef, useState } from 'react';
+import AlertDanger from '../../components/AlertDanger';
+import { getToken } from '../../scripts/authentication';
 
-export default function createDirectory(props){
+export default function CreateDirectory(props){
     const nameRef = createRef();
-    const submit = () => {
-        return
+    const tagRef = createRef();
+
+    const [errorView, setErrorView] = useState(false);
+    const [errorText, setErrorText] = useState('')
+
+    const submit = async () => {
+        let response = await fetch(`/storage/directory`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${getToken().token}`,
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                'name': nameRef.current.value,
+                'tags': tagRef.current.value,
+                'parent': props.directory
+            })
+        })
+        if (response.status !== 201){
+            const error = await response.json()
+            if (Object.prototype.toString.call(error) === '[object Array]') {
+                alertError(error[0])
+                return
+            } 
+            alertError(error.name[0])
+            return
+        }
+        props.update()
+        nameRef.current.value = ''
+        tagRef.current.value = ''
     }
+
+    const alertError = (text) => {
+        setErrorText(text)
+        setErrorView(true);
+        setTimeout(() => { setErrorView(false); }, 5000);
+        return
+    } 
 
     return (
         <div className="position-absolute start-0 top-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={props.show}>
@@ -16,6 +53,12 @@ export default function createDirectory(props){
                     <input className='form-control' type="text" size="lg" ref={nameRef} />
                 </div>
 
+                <div className="input-group">
+                    <span className="input-group-text">Tags</span>
+                    <input className='form-control' type="text" size="lg" ref={tagRef} />
+                </div>
+                <small className="mb-3">seperete tags with a space</small>
+
                 <button 
                     type='button'
                     className='btn btn-primary-dark mx-auto'
@@ -24,6 +67,13 @@ export default function createDirectory(props){
                 >
                     Upload
                 </button>
+
+                <AlertDanger 
+                    text={errorText} 
+                    see={errorView}
+                    animate={{ opacity: 1, x: 0, hight:"100%" }}
+                    change={{ opacity: 0, x: "-100%", hight:'0px'}}
+                />
             </div>
         </div>
     )  

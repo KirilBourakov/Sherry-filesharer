@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import File, Directory
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 import os
 
@@ -20,13 +21,41 @@ class DirectoryContentDirectorySerializer(serializers.ModelSerializer):
     def get_path(self, obj):
         return obj.name
     
+class CreateDirectoryContents(serializers.ModelSerializer):
+    parent = serializers.CharField(max_length=100)
+
+    class Meta:
+        model = Directory
+        fields = ['name', 'tags', 'parent']
+
+    def validate_parent(self, value):
+        user = self.context['request'].user
+        parent = get_object_or_404(Directory, owner=user, name=value)
+        return parent
+    
+    def create(self, validated_data):  
+        user = self.context['request'].user
+        parent = validated_data.get('parent')
+        if not parent:
+            raise serializers.ValidationError("Parent does not exist or user does not have access.")
+        fullName = getattr(parent, 'name') + validated_data['name']
+        
+        try: 
+            return Directory.objects.create(
+                name=fullName,
+                parent=parent,
+                owner=user,
+                tags=validated_data['tags']
+            )
+        except IntegrityError:
+            raise serializers.ValidationError('A directory with this name already exists')
 
 class UploadSerializer(serializers.ModelSerializer):
     directory = serializers.CharField(max_length=100)
     
     class Meta:
         model = File
-        fields = ('file', 'filename', 'directory', 'tags')
+        fields = ['file', 'filename', 'directory', 'tags']
 
     def validate_directory(self, value):
         # Validate that the directory exists for the current user

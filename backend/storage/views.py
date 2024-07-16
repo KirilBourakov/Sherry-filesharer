@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer
+from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectoryContents
 from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, status, viewsets, parsers
 
 # Create your views here.
-class DirectoryContents(APIView):
+class DirectoryAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
         user = request.user
@@ -30,6 +30,13 @@ class DirectoryContents(APIView):
             'directories': directory_serializer.data
         }
         return Response(data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CreateDirectoryContents(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DirectoryId(APIView):
     permission_classes = [permissions.IsAuthenticated]

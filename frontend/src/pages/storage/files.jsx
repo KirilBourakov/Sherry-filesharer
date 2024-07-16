@@ -12,7 +12,7 @@ export default function Contents(props){
     useEffect((parm=props.params) => {
         checkLoginAndRedirect(nav)
         const fetchContents = () => {
-            fetch(`/storage/getDirectoryContents`, {
+            fetch(`/storage/directory`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${getToken().token}`,
