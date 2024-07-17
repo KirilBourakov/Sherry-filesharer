@@ -19,11 +19,17 @@ export async function login(username, password){
 }
 
 export async function checkLoginAndRedirect(nav){
+    if (!isLoggedIn()) {
+        return nav('/login')
+    }
+} 
+
+export async function isLoggedIn(){
     const token = getToken()
     const tokenUndefined = (token.token === undefined || token.token === null)
     const tokenExpired = (token.token === undefined || token.token === null || new Date() > new Date(token.expiry))
     if (tokenUndefined || tokenExpired){
-        return nav('/login')
+        return false
     }
     const response = await fetch(`/user/auth/check`, {
         headers: {
@@ -35,9 +41,10 @@ export async function checkLoginAndRedirect(nav){
 
     if (response.status !== 200){
         updateToken(null, null)
-        return nav('/login')
+        return false
     }
-} 
+    return true
+}
 
 export function updateToken(token, expiry){
     localStorage.setItem('token', token)

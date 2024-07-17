@@ -1,7 +1,7 @@
-import { useState } from "react"
+import './styles.css'
 
-export default function HamburgerMenu(props){
-    const [visible, setVisible] = useState()
+export default function HamburgerMenu({visible, setVisible, children}){
+
     const toggle = () => {
         setVisible(!visible)
     }
@@ -19,8 +19,8 @@ export default function HamburgerMenu(props){
             >
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <div className={`${visible ? 'show' : 'collapse'} navbar-collapse p-2`} id="navbarSupportedContent">
-                {props.children}
+            <div className={`${visible ? 'show' : ''} collapse navbar-collapse p-2 above`} id="navbarSupportedContent">
+                    {children}
             </div>
         </>
     )
