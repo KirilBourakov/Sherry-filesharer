@@ -29,8 +29,9 @@ export async function isLoggedIn(){
     const tokenUndefined = (token.token === undefined || token.token === null)
     const tokenExpired = (token.token === undefined || token.token === null || new Date() > new Date(token.expiry))
     if (tokenUndefined || tokenExpired){
-        return false
+        return Promise.resolve(false)
     }
+
     const response = await fetch(`/user/auth/check`, {
         headers: {
             'Content-Type': 'application/json',
@@ -41,9 +42,9 @@ export async function isLoggedIn(){
 
     if (response.status !== 200){
         updateToken(null, null)
-        return false
+        return Promise.resolve(false)
     }
-    return true
+    return Promise.resolve(true)
 }
 
 export function updateToken(token, expiry){
@@ -51,9 +52,14 @@ export function updateToken(token, expiry){
     localStorage.setItem('expiry', expiry)
 }
 
+export function clearUser(){
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem('expiry');
+}
+
 export function getToken(){
     return {
-        'expiry': localStorage.getItem('expiry'),
-        'token': localStorage.getItem('token')
+        'expiry': localStorage.getItem('expiry') ? localStorage.getItem('expiry') : null,
+        'token': localStorage.getItem('token') ? localStorage.getItem('token') : null
     }
 }

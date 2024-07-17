@@ -1,16 +1,24 @@
 import UserName from './UserName';
 import SearchBar from './search';
 import HamburgerMenu from './hamburger';
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { isLoggedIn } from '../../scripts/authentication'
 
 export default function Navbar(){
     const [visible, setVisible] = useState()
+    const [authenticated, setAuthenticated] = useState(false)
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const isAuthenticated = await isLoggedIn();
+            setAuthenticated(isAuthenticated);
+        };
+        checkLoginStatus();
+    }, []);
     return(
         <nav className={`navbar navbar-expand-lg navbar-light sticky-top bg-light ${visible ? '' : 'shadow'}`}>
-            {isLoggedIn() ? 
+            {authenticated ? 
                 <>
-                    {/* <UserName /> */}
+                    <UserName />
                     <div className='ms-auto'>
                         <HamburgerMenu visible={visible} setVisible={setVisible}>
                             <SearchBar/>
