@@ -4,5 +4,6 @@ from . import views
 urlpatterns = [
     path('directory', views.DirectoryAPI.as_view(), name='directory'),
     path('getDirectoryId', views.DirectoryId.as_view(), name='DirectoryId'),
-    path('upload', views.UploadFile.as_view(), name='upload'),
+    path('file', views.FileAPI.as_view(), name='file'),
+    path('fileInfo', views.FileInfoAPI.as_view(), name='FileInfo')
 ]

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateContext } from './description';
+import { updateContext } from '.';
 
 const variants = {
     HoverButton:{

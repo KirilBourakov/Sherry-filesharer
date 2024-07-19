@@ -1,9 +1,9 @@
 import { createRef, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { shareContext, updateContext } from './description';
-import AlertDanger from "../../components/AlertDanger";
-import AlertSuccess from '../../components/AlertSuccess'
+import { shareContext, updateContext } from '.';
+import AlertDanger from "../../../components/AlertDanger";
+import AlertSuccess from '../../../components/AlertSuccess'
 
 const variants = {
     HoverButton:{

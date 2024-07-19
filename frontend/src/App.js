@@ -36,7 +36,7 @@ function App() {
             <Route path="/logout" element={<LogoutView/>}/>
 
             {/* protected routes */}
-            <Route path="/item/:id" element={key ? <Item /> : <Navigate to="/login"/>}/>
+            <Route path="/item/:id" element={<Item />}/>
             <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
             <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
             <Route path="/storage" element={<Storage />}/>

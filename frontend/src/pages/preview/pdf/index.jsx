@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import Description from './description';
+import Description from '../description';
 
 export default function MainFile(){
     const [key, changekey] = useState(window.localStorage.getItem('key'));

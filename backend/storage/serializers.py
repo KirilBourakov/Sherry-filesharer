@@ -82,3 +82,26 @@ class UploadSerializer(serializers.ModelSerializer):
             directory=directory,     
         )    
 
+class CustomFileField(serializers.FileField):
+    def to_representation(self, value):
+        # `value` is the file-like object or binary data
+        if hasattr(value, 'read'):
+            # If `value` is a file-like object (e.g., FileField in Django)
+            return value.read()
+        return value  # If `value` is already binary data
+
+    def to_internal_value(self, data):
+        return data
+class FileSerializer(serializers.ModelSerializer):
+    file = CustomFileField()
+    class Meta:
+        model = File
+        fields = ['file']
+class FileInfoSerializer(serializers.ModelSerializer):
+    author_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = File
+        fields = ['shared_with', 'filename', 'tags', 'public', 'author_name']
+    def get_author_name(self, obj):
+        return obj.author.username

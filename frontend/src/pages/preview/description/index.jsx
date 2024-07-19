@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
+import { checkLoginAndRedirect, getToken } from '../../../scripts/authentication'
 import SharedWith from './SharedWith';
 import Tags from './Tags';
 import Owner from './owner';
@@ -11,32 +12,37 @@ export const tagContext = createContext()
 export const shareContext = createContext()
 
 export default function Description(){
-    const [key, changekey] = useState(window.localStorage.getItem('key'));
-    const [userdata, setuserdata] = useState([]);
+    const [userdata, setuserdata] = useState(null);
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
     useEffect(() => {
+        checkLoginAndRedirect()
         getdata();
       }, [id, update]);
 
     const getdata = () => {
-        fetch(`api/item/userdata/${id}`, {
+        fetch(`/storage/fileInfo?file=${id}`, {
             headers: {
-                "Authorization": `Token ${key}`,
+                "Authorization": `Token ${getToken().token}`,
             }
         })
         .then(response => response.json())
+        // .then(response => console.log(response))
         .then(data => {
             setuserdata(data)
         });
     };
+    if (userdata === null){
+        return <></>
+    }
+
     return(
         <>
-            <p>Description of <strong> <FileName file={userdata.file} /> </strong></p>
+            <p>Description of <strong> <FileName file={userdata.filename} /> </strong></p>
             <hr className='description'/>
             <div className="d-flex flex-column">
                 <div className='d-flex'><strong className='me-1 align-self-center'>Owner:</strong>
-                    <Owner content={userdata.owner_name}/>
+                    <Owner content={userdata.author_name}/>
                 </div>
 
                 <div className='d-flex'><strong className='me-1 align-self-center'>Shared with:</strong>
@@ -51,7 +57,7 @@ export default function Description(){
                     <tagContext.Provider value={userdata.tags}>
                         <shareContext.Provider value={[userdata.public, userdata.shared_with]}>
                         
-                            <Edit/>
+                            {/* <Edit/> */}
 
                         </shareContext.Provider>
                     </tagContext.Provider>

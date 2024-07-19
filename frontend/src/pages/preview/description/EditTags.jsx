@@ -1,4 +1,4 @@
-import {updateContext, tagContext} from './description';
+import {updateContext, tagContext} from '.';
 import { createRef, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';

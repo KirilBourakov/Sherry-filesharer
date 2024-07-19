@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer
+from django.shortcuts import render, HttpResponse
+from django.db.models import Q
+from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer, FileSerializer, FileInfoSerializer
 from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
@@ -46,9 +47,13 @@ class DirectoryId(APIView):
             'id': directory.id
         }, status=status.HTTP_200_OK)
 
-class UploadFile(APIView):
+class FileAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [parsers.MultiPartParser]
+
+    def get(self, request):
+        return  Response(status=status.HTTP_200_OK)
+
     def post(self, request):
         print(request.data)
         serializer = UploadSerializer(data=request.data, context={'request': request})
@@ -58,3 +63,16 @@ class UploadFile(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class FileInfoAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser]
+
+    def get(self, request):
+        requested_file = request.GET.get('file', None)
+        if requested_file is None:
+            return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
+        file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user))
+        file = file.get(pk=requested_file)
+        serializer = FileInfoSerializer(file)
+        return Response(serializer.data, status=status.HTTP_200_OK)
