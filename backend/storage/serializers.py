@@ -99,9 +99,15 @@ class FileSerializer(serializers.ModelSerializer):
         fields = ['file']
 class FileInfoSerializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
+    is_author = serializers.SerializerMethodField()
 
     class Meta:
         model = File
-        fields = ['shared_with', 'filename', 'tags', 'public', 'author_name']
+        fields = ['shared_with', 'filename', 'tags', 'public', 'author_name', 'is_author']
     def get_author_name(self, obj):
         return obj.author.username
+    def get_is_author(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return obj.author == user
+        return False

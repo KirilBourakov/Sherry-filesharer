@@ -27,7 +27,6 @@ export default function Description(){
             }
         })
         .then(response => response.json())
-        // .then(response => console.log(response))
         .then(data => {
             setuserdata(data)
         });

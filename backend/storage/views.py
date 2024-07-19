@@ -74,5 +74,5 @@ class FileInfoAPI(APIView):
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
         file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user))
         file = file.get(pk=requested_file)
-        serializer = FileInfoSerializer(file)
+        serializer = FileInfoSerializer(file, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
