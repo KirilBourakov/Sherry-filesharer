@@ -17,8 +17,8 @@ const variants = {
 };
 
 export default function Delete(){
-    const update = useContext(updateContext)[0]; 
-    const forceupdate = useContext(updateContext)[1];
+    const update = null
+    const forceupdate = null
     const { id } = useParams();
     const nav = useNavigate();
 

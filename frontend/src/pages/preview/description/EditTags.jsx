@@ -15,10 +15,10 @@ const variants = {
     }
 };
 
-export default function EditTags(){
-    const update = useContext(updateContext)[0];
-    const forceupdate = useContext(updateContext)[1];
-    const tags = useContext(tagContext);
+export default function EditTags(props){
+    const update = null
+    const forceupdate = null
+    const tags = props.tags
     const { id } = useParams();
     const tagsRef = createRef()
 

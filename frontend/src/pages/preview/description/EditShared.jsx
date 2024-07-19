@@ -18,12 +18,12 @@ const variants = {
     closed: { opacity: 0, y:'30px' },
 };
 
-export default function EditShared(){
+export default function EditShared(props){
     const { id } = useParams();
-    const update = useContext(updateContext)[0];
-    const forceupdate = useContext(updateContext)[1];
-    const pub = useContext(shareContext)[0];
-    const shared = useContext(shareContext)[1];
+    const update = null
+    const forceupdate = null
+    const pub = props.public
+    const shared = props.shared
 
     //error state
     const [errorView, setErrorView] = useState(false)

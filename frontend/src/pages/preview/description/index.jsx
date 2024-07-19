@@ -4,8 +4,10 @@ import { checkLoginAndRedirect, getToken } from '../../../scripts/authentication
 import SharedWith from './SharedWith';
 import Tags from './Tags';
 import Owner from './owner';
-import Edit from './edit';
 import FileName from './FileName';
+import EditTags from './EditTags'
+import EditShared from './EditShared'
+import Delete from './Delete'
 
 export const updateContext = createContext()
 export const tagContext = createContext()
@@ -52,15 +54,24 @@ export default function Description(){
                     <Tags tags={userdata.tags} />
                 </div>
 
-                <updateContext.Provider value={[update, forceupdate]}>
-                    <tagContext.Provider value={userdata.tags}>
-                        <shareContext.Provider value={[userdata.public, userdata.shared_with]}>
-                        
-                            {/* <Edit/> */}
-
-                        </shareContext.Provider>
-                    </tagContext.Provider>
-                </updateContext.Provider>
+                {userdata.is_author ?
+                        <div className='d-flex flex-column'>
+                            <hr className='description'/>
+                            <strong className='me-1 align-self-center'>Edit Tags</strong>
+                            <EditTags tags={userdata.tags}/>
+                            <hr className='description'/>
+                            <strong className='me-1 align-self-center'>Edit Users</strong>
+                            <EditShared public={userdata.public} shared={userdata.shared_with} />
+                            <hr className='description'/>
+                            <strong className='me-1 align-self-center'>DANGER!</strong>
+                            <Delete />
+                        </div>
+                    :
+                    <>
+                        <hr className='description'/>
+                        <strong>Only the owner can edit the file</strong>
+                    </>
+                } 
             </div>
         </>
         
