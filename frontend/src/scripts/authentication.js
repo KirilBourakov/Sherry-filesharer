@@ -19,7 +19,8 @@ export async function login(username, password){
 }
 
 export async function checkLoginAndRedirect(nav){
-    if (!isLoggedIn()) {
+    const log = await isLoggedIn()
+    if (!log) {
         return nav('/login')
     }
 } 
