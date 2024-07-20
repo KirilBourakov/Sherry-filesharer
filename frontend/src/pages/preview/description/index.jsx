@@ -3,7 +3,6 @@ import { useState, useEffect, createContext } from 'react';
 import { checkLoginAndRedirect, getToken } from '../../../scripts/authentication'
 import SharedWith from './SharedWith';
 import Tags from './Tags';
-import Owner from './owner';
 import FileName from './FileName';
 import Edit from './edit';
 
@@ -41,7 +40,9 @@ export default function Description(){
             <hr className='description'/>
             <div className="d-flex flex-column">
                 <div className='d-flex'><strong className='me-1 align-self-center'>Owner:</strong>
-                    <Owner content={userdata.author_name}/>
+                    <div className="ms-1 badge bg-success text-wrap align-self-center">
+                        {userdata.author_name}
+                    </div>
                 </div>
 
                 <div className='d-flex'><strong className='me-1 align-self-center'>Shared with:</strong>
