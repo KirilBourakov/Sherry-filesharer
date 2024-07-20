@@ -132,14 +132,7 @@ export default function SharedDropdown(props){
         return(
             <>
             <div className='d-flex flex-column align-items-start mt-3 mb-1'>
-                <motion.button 
-                onClick={changePrivate}
-                whileHover={'HoverDelete'}
-                variants={variants} 
-                className="btn btn-outline-primary mb-1 me-1">
-                    Make Public
-                </motion.button>
-
+            
                 {/* remove user */}
                 <hr className='subdescription align-self-center'/>
                 <div className="row">
@@ -182,12 +175,20 @@ export default function SharedDropdown(props){
                         </motion.button>
                     </div>
                     <div className="col-8 ps-0 pe-1">
-                        <div className="input-group mb-3">
+                        <div className="input-group">
                             <input type='text' ref={addUserRef} className="form-control" placeholder='Name or user id'></input>
                         </div>
                     </div>
-                    <small className="form-text text-muted m-0">Use a # if adding by id</small>
+                    <small className="form-text text-muted mb-3">Use a # if adding by id</small>
                 </div>
+
+                <motion.button 
+                onClick={changePrivate}
+                whileHover={'HoverDelete'}
+                variants={variants} 
+                className="btn btn-outline-primary mb-1 me-1">
+                    Make Public
+                </motion.button>
             </div>
 
                 <AlertDanger 
