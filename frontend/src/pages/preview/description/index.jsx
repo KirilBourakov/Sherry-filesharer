@@ -5,9 +5,7 @@ import SharedWith from './SharedWith';
 import Tags from './Tags';
 import Owner from './owner';
 import FileName from './FileName';
-import EditTags from './EditTags'
-import EditShared from './EditShared'
-import Delete from './Delete'
+import Edit from './edit';
 
 export const updateContext = createContext()
 export const tagContext = createContext()
@@ -55,17 +53,7 @@ export default function Description(){
                 </div>
 
                 {userdata.is_author ?
-                        <div className='d-flex flex-column'>
-                            <hr className='description'/>
-                            <strong className='me-1 align-self-center'>Edit Tags</strong>
-                            <EditTags tags={userdata.tags}/>
-                            <hr className='description'/>
-                            <strong className='me-1 align-self-center'>Edit Users</strong>
-                            <EditShared public={userdata.public} shared={userdata.shared_with} />
-                            <hr className='description'/>
-                            <strong className='me-1 align-self-center'>DANGER!</strong>
-                            <Delete />
-                        </div>
+                        <Edit isPublic={userdata.public} shared_with={userdata.shared_with} tags={userdata.tags}/>
                     :
                     <>
                         <hr className='description'/>

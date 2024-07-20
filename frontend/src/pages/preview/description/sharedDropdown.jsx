@@ -18,7 +18,7 @@ const variants = {
     closed: { opacity: 0, y:'30px' },
 };
 
-export default function EditShared(props){
+export default function SharedDropdown(props){
     const { id } = useParams();
     const update = null
     const forceupdate = null
