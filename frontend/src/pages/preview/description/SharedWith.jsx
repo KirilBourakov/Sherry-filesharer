@@ -22,8 +22,8 @@ export default function SharedWith(props){
             <>
                 {props.data.map(share => {
                     return(
-                        <div key={share} className="ms-1 badge bg-secondary text-wrap align-self-center">
-                            {share}
+                        <div key={share.id} className="ms-1 badge bg-secondary text-wrap align-self-center">
+                            {share.username}
                         </div>
                     )
                 })}

@@ -100,10 +100,15 @@ class FileSerializer(serializers.ModelSerializer):
 class FileInfoSerializer(serializers.ModelSerializer):
     author_name = serializers.SerializerMethodField()
     is_author = serializers.SerializerMethodField()
+    shared_with = serializers.SerializerMethodField()
 
     class Meta:
         model = File
-        fields = ['shared_with', 'filename', 'tags', 'public', 'author_name', 'is_author']
+        fields = ['shared_with', 'filename', 'tags', 'public', 'author_name', 'is_author', 'id']
+
+    def get_shared_with(self, instance):
+        return [{'id': user.id, 'username': user.username} for user in instance.shared_with.all()] 
+    
     def get_author_name(self, obj):
         return obj.author.username
     def get_is_author(self, obj):

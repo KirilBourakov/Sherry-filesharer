@@ -1,7 +1,7 @@
 import { createRef, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { shareContext, updateContext } from '.';
+import { getToken } from "../../../scripts/authentication";
 import AlertDanger from "../../../components/AlertDanger";
 import AlertSuccess from '../../../components/AlertSuccess'
 
@@ -20,10 +20,9 @@ const variants = {
 
 export default function EditVisibility(props){
     const { id } = useParams();
-    const update = null
-    const forceupdate = null
-    const pub = props.public
+    const pub = props.isPublic
     const shared = props.shared
+    const update = props.update
 
     //error state
     const [errorView, setErrorView] = useState(false)
@@ -38,63 +37,39 @@ export default function EditVisibility(props){
     const addUserRef = createRef()
 
     const changePrivate = async () => {
-        let response = await (await (fetch(`api/ChangePrivate/${id}`, {
+        const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+                'Content-Type': 'application/json',
+                "Authorization": `Token ${getToken().token}`,  
             },
-            method: 'PUT',
+            method: 'PATCH',
             body: JSON.stringify({
-                bool: !pub
+                public: !pub
             })
-            
-        }))).json();
-    
-        if (response.response !== true) {
-            alertError(response.response)
-            return;
+        })
+        console.log(response.status)
+        if(response.status === 200){
+            update()
         }
-        updateView()
         return;
     }
 
-    const removeUser = async () => {
-        const user = removeUserRef.current.value
-        let response = await (await (fetch(`api/RemoveUser/${id}`, {
+    const alterUser = async (action, user) => {
+        const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
+                'Content-Type': 'application/json',
+                "Authorization": `Token ${getToken().token}`,  
             },
-            method: 'PUT',
+            method: 'POST',
             body: JSON.stringify({
-                user: user
-                
+                user: user,
+                action: action
             })
-        }))).json();
-        if (response.response !== true) {
-            alertError(response.response)
-            return;
+        })
+        console.log(response.status)
+        if(response.status === 200){
+            update()
         }
-        updateView()
-        return;
-    }
-
-    const addUser = async () => {
-        let user =  addUserRef.current.value
-        let response = await (await (fetch(`api/addUser/${id}`, {
-            headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`,
-            },
-            method: 'PUT',
-            body: JSON.stringify({
-                user: user
-                
-            })
-        }))).json();
-        if (response.response !== true) {
-            alertError(response.response)
-            return;
-        }
-        alertSuccess('User added')
-        updateView()
         return;
     }
 
@@ -108,11 +83,6 @@ export default function EditVisibility(props){
         setSuccessText(msg)
         setSuccessView(true);
         setTimeout(() => { setSuccessView(false); }, 2000);
-    }
-
-    const updateView = () => {
-        forceupdate(update+1)
-        return;
     }
 
     if (pub){
@@ -138,7 +108,7 @@ export default function EditVisibility(props){
                 <div className="row">
                     <div className="col-4 pe-0">
                         <motion.button 
-                        onClick={removeUser}
+                        onClick={() => alterUser('remove', removeUserRef.current.value)}
                         whileHover={'HoverDelete'}
                         variants={variants} 
                         className="btn btn-outline-primary mb-1">
@@ -152,7 +122,7 @@ export default function EditVisibility(props){
                             {shared &&
                                 shared.map((user) => {
                                 return(
-                                    <option key={user} value={user}>{user}</option>
+                                    <option key={user.id} value={`#${user.id}`}>{user.username}</option>
                                 )
                             })
                             
@@ -167,7 +137,7 @@ export default function EditVisibility(props){
                 <div className="row">
                     <div className="col-4 pe-0">
                         <motion.button 
-                        onClick={addUser}
+                        onClick={() => alterUser('add', addUserRef.current.value)}
                         whileHover={'HoverDelete'}
                         variants={variants} 
                         className="btn btn-outline-primary mb-1">

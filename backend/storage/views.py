@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer, FileSerializer, FileInfoSerializer
 from .models import File, Directory
 from rest_framework.views import APIView
@@ -88,8 +89,12 @@ class FileInfoAPI(APIView):
         requested_file = request.GET.get('file', None)
         if requested_file is None:
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
-        file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user))
-        file = file.get(pk=requested_file)
+        
+        try:
+            file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user)).filter(id=requested_file)[0]
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
         serializer = FileInfoSerializer(file, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -103,3 +108,25 @@ class FileInfoAPI(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request, pk):
+        user = request.data.get('user')
+        action = request.data.get('action')
+        if not user or not action:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if pk is None:
+            return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
+        file = get_object_or_404(File, pk=pk, author=request.user)
+
+        if user[0] == '#':
+            user = get_object_or_404(User, pk=user[1:])
+        else:
+            user = get_object_or_404(User, username=user)
+
+        if action == 'add':
+            file.shared_with.add(user)
+        if action == 'remove':
+            file.shared_with.remove(user)
+        file.save()
+        return Response(status=status.HTTP_200_OK)

@@ -71,7 +71,7 @@ export default function Edit({ isPublic, shared_with, tags, id, update }){
             <hr className='description'/>
             
             <strong className='me-1 align-self-center'>Edit Users</strong>
-            <EditVisibility isPublic={isPublic} shared={shared_with} />
+            <EditVisibility isPublic={isPublic} shared={shared_with} update={update}/>
             
             <hr className='description'/>
 
