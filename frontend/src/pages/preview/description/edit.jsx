@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import SharedDropdown from "./sharedDropdown"
+import EditVisibility from "./editVisibility"
 import { createRef } from "react"
 import { getToken } from "../../../scripts/authentication";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +71,7 @@ export default function Edit({ isPublic, shared_with, tags, id, update }){
             <hr className='description'/>
             
             <strong className='me-1 align-self-center'>Edit Users</strong>
-            <SharedDropdown isPublic={isPublic} shared={shared_with} />
+            <EditVisibility isPublic={isPublic} shared={shared_with} />
             
             <hr className='description'/>
 
