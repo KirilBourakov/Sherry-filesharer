@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import SharedDropdown from "./sharedDropdown"
 import { createRef } from "react"
 import { getToken } from "../../../scripts/authentication";
+import { useNavigate } from "react-router-dom";
 
 const variants = {
     HoverButton:{
@@ -18,7 +19,7 @@ const variants = {
 
 const tagsRef = createRef()
 export default function Edit({ isPublic, shared_with, tags, id, update }){
-
+    const nav = useNavigate()
     const updateTags = async () => {
         const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
@@ -36,8 +37,16 @@ export default function Edit({ isPublic, shared_with, tags, id, update }){
         console.log(response.status)
         return
     }
-    const deleteFile = () => {
-        return
+    const deleteFile = async () => {
+        const response = await fetch(`/storage/file?file=${id}`, {
+            headers: {
+                "Authorization": `Token ${getToken().token}`,  
+            },
+            method: 'DELETE',
+        })
+        if (response.status === 200){
+            nav('/storage')
+        }
     }
 
     return(

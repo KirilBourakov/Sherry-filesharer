@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer, FileSerializer, FileInfoSerializer
 from .models import File, Directory
 from rest_framework.views import APIView
@@ -51,10 +52,10 @@ class FileAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [parsers.MultiPartParser]
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return  Response(status=status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         print(request.data)
         serializer = UploadSerializer(data=request.data, context={'request': request})
         print(serializer)
@@ -63,6 +64,14 @@ class FileAPI(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        requested_file = request.GET.get('file', None)
+        if requested_file is None:
+            return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
+        file = get_object_or_404(File, pk=requested_file, author=request.user)
+        file.delete()
+        return Response(status=status.HTTP_200_OK)
     
 class FileInfoAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
