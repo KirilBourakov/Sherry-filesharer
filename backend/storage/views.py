@@ -101,7 +101,7 @@ class FileInfoAPI(APIView):
     def patch(self, request, pk):
         if pk is None:
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
-        instance = File.objects.get(pk=pk)
+        instance = get_object_or_404(File, pk=pk, author=request.user)
         serializer = FileInfoSerializer(instance, data=request.data, partial=True, context={'request': request})
         print(serializer)
         if serializer.is_valid():
