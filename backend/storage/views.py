@@ -45,16 +45,7 @@ class DirectoryAPI(APIView):
         if id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         directory = get_object_or_404(Directory, pk=id, author=request.user)
-        toSearch = [directory]
-        allDirectories = []
-        while len(toSearch) > 0:
-            searched = toSearch.pop(0)
-            allDirectories.append(searched)
-            childern = Directory.objects.filter(parent=searched)
-            toSearch.append(childern)
-
-        for directory in allDirectories:
-            directory.delete()
+        directory.delete()
         return Response(status=status.HTTP_200_OK)
 
 class DirectoryId(APIView):
