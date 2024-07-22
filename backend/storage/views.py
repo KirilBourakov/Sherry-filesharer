@@ -40,6 +40,23 @@ class DirectoryAPI(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request):
+        id = request.GET.get('id', None)
+        if id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        directory = get_object_or_404(Directory, pk=id, author=request.user)
+        toSearch = [directory]
+        allDirectories = []
+        while len(toSearch) > 0:
+            searched = toSearch.pop(0)
+            allDirectories.append(searched)
+            childern = Directory.objects.filter(parent=searched)
+            toSearch.append(childern)
+
+        for directory in allDirectories:
+            directory.delete()
+        return Response(status=status.HTTP_200_OK)
+
 class DirectoryId(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
