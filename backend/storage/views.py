@@ -66,9 +66,8 @@ class FileAPI(APIView):
     
 class FileInfoAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [parsers.MultiPartParser]
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         requested_file = request.GET.get('file', None)
         if requested_file is None:
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
@@ -76,3 +75,14 @@ class FileInfoAPI(APIView):
         file = file.get(pk=requested_file)
         serializer = FileInfoSerializer(file, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk):
+        if pk is None:
+            return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
+        instance = File.objects.get(pk=pk)
+        serializer = FileInfoSerializer(instance, data=request.data, partial=True, context={'request': request})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import SharedDropdown from "./sharedDropdown"
 import { createRef } from "react"
+import { getToken } from "../../../scripts/authentication";
 
 const variants = {
     HoverButton:{
@@ -16,9 +17,23 @@ const variants = {
 };
 
 const tagsRef = createRef()
-export default function Edit({ isPublic, shared_with, tags }){
+export default function Edit({ isPublic, shared_with, tags, id, update }){
 
-    const updateTags = () => {
+    const updateTags = async () => {
+        const response = await fetch(`/storage/fileInfo/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Token ${getToken().token}`,  
+            },
+            method: 'PATCH',
+            body: JSON.stringify({
+                tags: tagsRef.current.value
+            })
+        })
+        if (response.status === 200){
+            update()
+        }
+        console.log(response.status)
         return
     }
     const deleteFile = () => {

@@ -30,6 +30,10 @@ export default function Description(){
             setuserdata(data)
         });
     };
+
+    const forceUpdate = () => {
+        forceupdate(update+1)
+    }
     if (userdata === null){
         return <></>
     }
@@ -54,7 +58,7 @@ export default function Description(){
                 </div>
 
                 {userdata.is_author ?
-                        <Edit isPublic={userdata.public} shared_with={userdata.shared_with} tags={userdata.tags}/>
+                        <Edit isPublic={userdata.public} shared_with={userdata.shared_with} tags={userdata.tags} id={id} update={forceUpdate}/>
                     :
                     <>
                         <hr className='description'/>
