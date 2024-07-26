@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse
+from django.http import FileResponse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -62,7 +63,13 @@ class FileAPI(APIView):
     parser_classes = [parsers.MultiPartParser]
 
     def get(self, request, *args, **kwargs):
-        return  Response(status=status.HTTP_200_OK)
+        requested_file = request.GET.get('file', None)
+        if requested_file is None:
+            return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
+        allowed = Q(pk=requested_file, author=request.user) | Q(pk=requested_file, shared_with=request.user)
+        file = get_object_or_404(File.objects.filter(allowed))
+        response = FileResponse(file.file.open(), filename=file.filename)
+        return response
 
     def post(self, request, *args, **kwargs):
         print(request.data)
