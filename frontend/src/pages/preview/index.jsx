@@ -1,21 +1,13 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { images, text, pdf } from '../../scripts/fileExtensions'
 import { motion } from 'framer-motion';
+import { getToken } from '../../scripts/authentication';
 import Description from './description';
 
-export default function Router(props){
+export default function Preview(props){
     let location = useLocation();
     const extension = location.state.extension
-
-    if (images.includes(extension)){
-        // image preview component
-    } else if (text.includes(extension)){
-        // text preview component
-    } else if (pdf.includes(extension)){
-        // pdf preview component
-    } else {
-        // cannot preview component
-    }
 
     // use effect to get file info
 
@@ -28,7 +20,7 @@ export default function Router(props){
         className="container">
             <div className="row">
                 <div className="col-12 col-md-8 mt-3">
-                    {/* filepreview */}
+                    <FilePreview extension={extension}/>
                 </div>
                 <div className="col-12 col-md-4 mt-3">
                     <Description />
@@ -36,4 +28,26 @@ export default function Router(props){
             </div>
         </motion.div>
     );
+}
+
+function FilePreview({extension}){
+    const { id } = useParams();
+    const [fileURL, setFileURL] = useState(null)
+    useEffect(() => {
+        console.log('adsad')
+        const getFile = async () => {
+            let response = await fetch(`/storage/file?file=${id}`, {
+                headers: {
+                    "Authorization": `Token ${getToken().token}`,
+                }
+            })
+            
+            response = await response.blob()
+            setFileURL(URL.createObjectURL(response))
+        }
+        getFile()
+    }, [])
+    return (
+        <iframe src={fileURL} className='pdf'> </iframe>
+    )
 }

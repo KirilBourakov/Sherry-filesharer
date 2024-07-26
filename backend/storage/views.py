@@ -67,7 +67,10 @@ class FileAPI(APIView):
         if requested_file is None:
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
         allowed = Q(pk=requested_file, author=request.user) | Q(pk=requested_file, shared_with=request.user)
-        file = get_object_or_404(File.objects.filter(allowed))
+        try:
+            file = File.objects.filter(allowed)[0]
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)    
         response = FileResponse(file.file.open(), filename=file.filename)
         return response
 
