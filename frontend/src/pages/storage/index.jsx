@@ -3,17 +3,24 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import Content from './contents';
 import Upload from './upload';
-import Search from '../../components/multi/search';
+import localSearch from './localSearch'
 import New from './new'
 import CreateDirectory from "./createDirectory";
 import { getToken } from "../../scripts/authentication";
+import { useLocation } from 'react-router-dom';
+import { checkLoginAndRedirect } from "../../scripts/authentication";
+import { useNavigate } from "react-router-dom";
 
 export default function Main(){
     const [update, forceupdate] = useState(0);
     const [search, changesearch ]= useState('|<>|');
     const [showUpload, changeShowUpload] = useState(false)
     const [showNewDirectory, changeShowNewDirectory] = useState(false)
+    const [contents, setContents] = useState({});
+    const [displayedContents, setDisplayedContents] = useState({});
+    const nav = useNavigate()
 
+    const location = useLocation();
     let path = useParams()['*']
 
     if (path === undefined){
@@ -22,6 +29,24 @@ export default function Main(){
         path = '/' + path
         if (path.slice(-1) === '/') path = path.slice(0,-1)
     }
+    useEffect(() => {
+        checkLoginAndRedirect(nav)
+        const fetchContents = () => {
+            fetch(`/storage/directory?path=${path}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${getToken().token}`,
+                },
+                method: 'get',
+            })
+            .then(response => response.json())
+            .then(response => {
+                setContents(response)
+                setDisplayedContents(response)
+            })
+        };
+        fetchContents();
+    }, [update, location]);
 
     const updateView = () => {
         forceupdate(update + 1)
@@ -47,10 +72,10 @@ export default function Main(){
                 <div>
                     <div className="container">
                         <div className="row mt-3">
-                            <Search changesearch={changesearch} />
+                            <localSearch />
                         </div>
                         <div className="row mt-3">
-                            <Content update={update} params={search} directory={path} forceupdate={updateView}/>
+                            <Content content={displayedContents} forceupdate={updateView}/>
                         </div>
                     </div>
                     {showUpload &&
