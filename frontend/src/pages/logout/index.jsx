@@ -1,29 +1,18 @@
 import { motion } from 'framer-motion'
-import { UseKeyHook } from '../../App';
+import { useEffect } from 'react';
+import { logout } from '../../scripts/authentication';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
 
 export default function Logout(){
-    const ChangeKey = useContext(UseKeyHook)
-    const nav = useNavigate();
-    const Effect = useEffect(() => {
-        logout();
-    }, [])
-    
-    const logout = async () => {
-        let response = await (await fetch(`dj-rest-auth/logout/`,
-        {
-            headers: {
-                "Authorization": `Token ${window.localStorage.getItem('key')}`
-            },
-            method: 'POST'
+    const nav = useNavigate()
+    useEffect(() => {
+        const run = async () => {
+            if (await logout()){
+                nav('/')
+            }
         }
-        )).json();
-        window.localStorage.removeItem('key');
-        ChangeKey('')
-        return nav("/");    
-    }
-
+        run()
+    }, [])
     return(
         <div className='d-flex flex-column align-items-center my-auto'>
             <div className='d-flex'>

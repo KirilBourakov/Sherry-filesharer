@@ -18,6 +18,21 @@ export async function login(username, password){
     }
 }
 
+export async function logout(){
+    const response = await fetch(`/user/auth/logout/`, {
+        headers: {
+            'Authorization': `Token ${getToken().token}`
+        },
+        method: 'POST'
+    });
+
+    if (response.status == 204 || response.status == 401){
+        clearUser()
+        return  Promise.resolve(true)
+    }
+    return  Promise.resolve(false)
+}
+
 export async function checkLoginAndRedirect(nav){
     const log = await isLoggedIn()
     if (!log) {
