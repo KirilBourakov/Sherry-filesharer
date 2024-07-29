@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getToken } from '../../scripts/authentication'
 import { useLocation } from 'react-router-dom';
 
-export default function Contents({content, forceupdate}){
+export default function Contents({content}){
 
     return(
         <div className="container">
@@ -14,7 +14,7 @@ export default function Contents({content, forceupdate}){
                 {content.directories &&
                     content.directories.map(d => (
                         d.show ? (
-                            <Folder key={d.id} name={d.directory_name} path={d.path} forceupdate={forceupdate}/>
+                            <Folder key={d.id} name={d.directory_name} path={d.path}/>
                         ) : null
                     ))
                 }

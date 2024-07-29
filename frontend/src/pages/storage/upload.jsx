@@ -29,7 +29,6 @@ const variants = {
 };
 
 export default function Upload(props){
-    const [successview, changesuccessview] = useState(false);
     const [uploadPrecentage, changeUploadPrecentage] = useState(0);
     const fileRef = createRef();
     const tagRef = createRef();
@@ -89,8 +88,8 @@ export default function Upload(props){
         xhr.send(formData);
 
         try {
-            await promise;
-            props.update();
+            await promise
+            props.update()
             fileRef.current.value = ''
             tagRef.current.value = ''
         } catch (error) {

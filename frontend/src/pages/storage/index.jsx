@@ -12,42 +12,41 @@ import { checkLoginAndRedirect } from "../../scripts/authentication";
 import { useNavigate } from "react-router-dom";
 
 export default function Main(){
-    const [update, forceupdate] = useState(0);
-    const [search, changesearch ]= useState('|<>|');
+    const nav = useNavigate()
+    const location = useLocation();
+
     const [showUpload, changeShowUpload] = useState(false)
     const [showNewDirectory, changeShowNewDirectory] = useState(false)
     const [contents, setContents] = useState({});
-    const nav = useNavigate()
+   
 
-    const location = useLocation();
     let path = useParams()['*']
-
     if (path === undefined){
         path = '/'
     } else {
         path = '/' + path
         if (path.slice(-1) === '/') path = path.slice(0,-1)
     }
+
     useEffect(() => {
         checkLoginAndRedirect(nav)
-        const fetchContents = () => {
-            fetch(`/storage/directory?path=${path}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${getToken().token}`,
-                },
-                method: 'get',
-            })
-            .then(response => response.json())
-            .then(response => {
-                setContents(response)
-            })
-        };
         fetchContents();
-    }, [update, location]);
+    }, [location]);
+
+    const fetchContents = async () => {
+        let response = await fetch(`/storage/directory?path=${path}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${getToken().token}`,
+            },
+            method: 'get',
+        })
+        response = await response.json()
+        setContents(response)
+    };
 
     const updateView = () => {
-        forceupdate(update + 1)
+        fetchContents()
         return
     }
 
@@ -73,7 +72,7 @@ export default function Main(){
                             <LocalSearch content={contents} setContents={setContents}/>
                         </div>
                         <div className="row mt-3">
-                            <Content content={contents} forceupdate={updateView}/>
+                            <Content content={contents}/>
                         </div>
                     </div>
                     {showUpload &&

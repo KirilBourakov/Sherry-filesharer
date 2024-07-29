@@ -6,7 +6,6 @@ export default function Folder(props){
 
     const redirect = () => {
         nav(`/storage${props.path}`);
-        props.forceupdate()
         return
     }
     return (
