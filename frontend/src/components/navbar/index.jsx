@@ -7,6 +7,7 @@ import { isLoggedIn } from '../../scripts/authentication'
 export default function Navbar(){
     const [visible, setVisible] = useState()
     const [authenticated, setAuthenticated] = useState(false)
+
     useEffect(() => {
         const checkLoginStatus = async () => {
             const isAuthenticated = await isLoggedIn();
@@ -22,7 +23,8 @@ export default function Navbar(){
                     <div className='ms-auto'>
                         <HamburgerMenu visible={visible} setVisible={setVisible}>
                             <SearchBar/>
-                            <div>123</div>  
+                            <button type="button" class="btn btn-primary mx-2" href="/storage">Storage</button>
+                            <button type="button" class="btn btn-primary me-2" href="/logout">Logout</button>    
                         </HamburgerMenu>
                     </div>
                 </>   
