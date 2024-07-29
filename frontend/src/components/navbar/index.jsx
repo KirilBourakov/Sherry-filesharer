@@ -23,8 +23,8 @@ export default function Navbar(){
                     <div className='ms-auto'>
                         <HamburgerMenu visible={visible} setVisible={setVisible}>
                             <SearchBar/>
-                            <button type="button" class="btn btn-primary mx-2" href="/storage">Storage</button>
-                            <button type="button" class="btn btn-primary me-2" href="/logout">Logout</button>    
+                            <a type="button" className="btn btn-primary mx-2" href="/storage">Storage</a>
+                            <a type="button" className="btn btn-primary me-2" href="/logout">Logout</a>    
                         </HamburgerMenu>
                     </div>
                 </>   
