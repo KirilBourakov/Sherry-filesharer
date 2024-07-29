@@ -48,11 +48,11 @@ export default function LocalSearch({content, setContents}){
                         <div>
                             <div className="form-check form-switch">
                                 <input className="form-check-input" type="checkbox" id="useTags" ref={tagRef} onChange={search}/>
-                                <label className="form-check-label" for="useTags">Search Tags</label>
+                                <label className="form-check-label" htmlFor="useTags">Search Tags</label>
                             </div>
                             <div className="form-check form-switch">
                                 <input className="form-check-input" type="checkbox" id="useName" ref={nameRef} onChange={search}/>
-                                <label className="form-check-label" for="useName">Search Filename</label>
+                                <label className="form-check-label" htmlFor="useName">Search Filename</label>
                             </div>
                         </div>
                     </div>
