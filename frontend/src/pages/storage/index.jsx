@@ -70,7 +70,7 @@ export default function Main(){
                 <div>
                     <div className="container">
                         <div className="row mt-3">
-                            <LocalSearch />
+                            <LocalSearch content={contents} setContents={setContents}/>
                         </div>
                         <div className="row mt-3">
                             <Content content={contents} forceupdate={updateView}/>

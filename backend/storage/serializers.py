@@ -8,7 +8,7 @@ class DirectoryContentFileSerializer(serializers.ModelSerializer):
     show = serializers.SerializerMethodField()
     class Meta:
         model = File
-        fields = ['filename', 'id', 'show']
+        fields = ['filename', 'id', 'tags', 'show']
     def get_show(self, obj):
         return True
 
@@ -18,7 +18,7 @@ class DirectoryContentDirectorySerializer(serializers.ModelSerializer):
     show = serializers.SerializerMethodField()
     class Meta:
         model = Directory
-        fields = ['path', 'directory_name', 'id', 'show']
+        fields = ['path', 'directory_name', 'id', 'tags', 'show']
 
     def get_directory_name(self, obj):
         return obj.name.strip('/').split('/')[-1]
