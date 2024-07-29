@@ -2,23 +2,28 @@ import { useRef } from "react";
 
 export default function LocalSearch({content, setContents}){
     const searchRef = useRef()
+    const tagRef = useRef()
+    const nameRef = useRef()
 
     const search = () => {
         const term = searchRef.current.value
+        const useTag = tagRef.current.checked
+        const useName = nameRef.current.checked
+
         const updatedContent = {
             ...content,
             directories: content.directories.map(directory => {
                 const isStr = typeof directory.tags === 'string' || directory.tags instanceof String;
                 return {
                     ...directory,
-                    show: directory.directory_name.includes(term) || (isStr && directory.tags.includes(term))
+                    show: (useName && directory.directory_name.includes(term)) || (isStr && useTag && directory.tags.includes(term))
                 };
             }),
             files: content.files.map(file => {
                 const isStr = typeof file.tags === 'string' || file.tags instanceof String;
                 return {
                     ...file,
-                    show: file.filename.includes(term) || (isStr && file.tags.includes(term))
+                    show: (useName && file.filename.includes(term)) || (isStr && useTag && file.tags.includes(term))
                 };
             })
         };
@@ -28,9 +33,19 @@ export default function LocalSearch({content, setContents}){
     return(
         <form>
             <div className="row">
-                <div className="col-3 p-0">
-                    <div className="form-group">
-                        <input type="text" className="form-control" ref={searchRef} placeholder="Search" onChange={search} />
+                <div className="col-3 p-0 me-2 d-flex align-items-center">
+                    <input type="text" className="form-control" placeholder="Search" ref={searchRef} onChange={search} />
+                </div>
+                <div className="col-3 p-0 d-flex align-items-center">
+                    <div>
+                        <div className="form-check form-switch">
+                            <input className="form-check-input" type="checkbox" id="useTags" ref={tagRef} onChange={search}/>
+                            <label className="form-check-label" for="useTags">Search Tags</label>
+                        </div>
+                        <div className="form-check form-switch">
+                            <input className="form-check-input" type="checkbox" id="useName" ref={nameRef} onChange={search}/>
+                            <label className="form-check-label" for="useName">Search Filename</label>
+                        </div>
                     </div>
                 </div>
             </div>
