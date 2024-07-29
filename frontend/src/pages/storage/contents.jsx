@@ -14,7 +14,11 @@ export default function Contents({content, forceupdate}){
                 {content.directories &&
                     content.directories.map(d => {
                         return(
-                            <Folder key={d.id} name={d.directory_name} path={d.path} forceupdate={forceupdate}/>
+                            <>
+                                {d.show &&
+                                    <Folder key={d.id} name={d.directory_name} path={d.path} forceupdate={forceupdate}/>
+                                }
+                            </>
                         )
                     })
                 }
@@ -23,7 +27,11 @@ export default function Contents({content, forceupdate}){
                 {content.files &&
                     content.files.map(d => {
                     return(
-                            <File key={d.id} filename={d.filename} fileid={d.id} />
+                            <>
+                                {d.show &&
+                                    <File key={d.id} filename={d.filename} fileid={d.id} />
+                                }
+                            </>      
                         )
                     })
                 }

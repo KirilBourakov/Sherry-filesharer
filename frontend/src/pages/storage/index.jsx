@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import Content from './contents';
 import Upload from './upload';
-import localSearch from './localSearch'
+import LocalSearch from './localSearch'
 import New from './new'
 import CreateDirectory from "./createDirectory";
 import { getToken } from "../../scripts/authentication";
@@ -17,7 +17,6 @@ export default function Main(){
     const [showUpload, changeShowUpload] = useState(false)
     const [showNewDirectory, changeShowNewDirectory] = useState(false)
     const [contents, setContents] = useState({});
-    const [displayedContents, setDisplayedContents] = useState({});
     const nav = useNavigate()
 
     const location = useLocation();
@@ -42,7 +41,6 @@ export default function Main(){
             .then(response => response.json())
             .then(response => {
                 setContents(response)
-                setDisplayedContents(response)
             })
         };
         fetchContents();
@@ -72,10 +70,10 @@ export default function Main(){
                 <div>
                     <div className="container">
                         <div className="row mt-3">
-                            <localSearch />
+                            <LocalSearch />
                         </div>
                         <div className="row mt-3">
-                            <Content content={displayedContents} forceupdate={updateView}/>
+                            <Content content={contents} forceupdate={updateView}/>
                         </div>
                     </div>
                     {showUpload &&

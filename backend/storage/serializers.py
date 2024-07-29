@@ -5,21 +5,27 @@ from django.shortcuts import get_object_or_404
 import os
 
 class DirectoryContentFileSerializer(serializers.ModelSerializer):
+    show = serializers.SerializerMethodField()
     class Meta:
         model = File
-        fields = ['filename', 'id']
+        fields = ['filename', 'id', 'show']
+    def get_show(self, obj):
+        return True
 
 class DirectoryContentDirectorySerializer(serializers.ModelSerializer):
     directory_name = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
+    show = serializers.SerializerMethodField()
     class Meta:
         model = Directory
-        fields = ['path', 'directory_name', 'id']
+        fields = ['path', 'directory_name', 'id', 'show']
 
     def get_directory_name(self, obj):
         return obj.name.strip('/').split('/')[-1]
     def get_path(self, obj):
         return obj.name
+    def get_show(self, obj):
+        return True
     
 class CreateDirectorySerializer(serializers.ModelSerializer):
     parent = serializers.CharField(max_length=100)
