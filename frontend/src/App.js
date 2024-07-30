@@ -15,6 +15,7 @@ import LogoutView from './pages/logout';
 import Item from './pages/preview';
 import PublicPath from './pages/public';
 import SharedWithMe from './pages/shared/';
+import Search from './pages/search';
 
 export const UseKeyHook = createContext()
 
@@ -29,18 +30,22 @@ function App() {
 
             {/* unprotected routes */}
             <Route path="/" element={<Home/>} />
+            <Route path="/search" element={<Search/>}/>
 
             {/* login/out */}
             <Route path="/Create-account" element={<CreateAccount/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/logout" element={<LogoutView/>}/>
+            
 
             {/* protected routes */}
             <Route path="/item/:id" element={<Item />}/>
-            <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
-            <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
             <Route path="/storage" element={<Storage />}/>
             <Route path="/storage/*" element={<Storage />}/>
+
+            {/* old */}
+            <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
+            <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
               
           </Routes>
         </div>
