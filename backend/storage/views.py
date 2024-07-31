@@ -8,6 +8,7 @@ from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import permissions, status, viewsets, parsers
 
 # Create your views here.
@@ -51,6 +52,9 @@ class DirectoryAPI(APIView):
         return Response(status=status.HTTP_200_OK)
 
 class SearchAPI(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
     # TODO: allow anonymous users to search; simply code
     def post(self, request):
         serializer = SearchPayloadSerializer(data = request.data)
@@ -61,13 +65,13 @@ class SearchAPI(APIView):
             
             fileQ = Q()
             directoryQ = Q()
-            if search_data.get('searchSharedWith'):
+            if search_data.get('searchSharedWith') and request.user.is_authenticated:
                 fileQ |= Q(shared_with=request.user)
                 directoryQ |= Q(shared_with=request.user)
             if search_data.get('searchPublic'):
                 fileQ |= Q(public=True)
                 directoryQ |= Q(public=True)
-            if search_data.get('searchMine'):
+            if search_data.get('searchMine') and request.user.is_authenticated:
                 fileQ |= Q(author=request.user)
                 directoryQ |= Q(owner=request.user)
             files = files.filter(fileQ)
