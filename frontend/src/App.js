@@ -14,7 +14,6 @@ import Storage from './pages/storage';
 import LogoutView from './pages/logout';
 import Item from './pages/preview';
 import PublicPath from './pages/public';
-import SharedWithMe from './pages/shared/';
 import Search from './pages/search';
 
 export const UseKeyHook = createContext()
@@ -45,7 +44,6 @@ function App() {
 
             {/* old */}
             <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
-            <Route path='/Shared-with-me' element={key ? <SharedWithMe /> : <Navigate to="/login"/>}/>
               
           </Routes>
         </div>
