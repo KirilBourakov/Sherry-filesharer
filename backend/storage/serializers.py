@@ -69,7 +69,7 @@ class SearchCriteriaSerializer(serializers.Serializer):
     useSharedWith = serializers.BooleanField(required=False)
 
 class SearchPayloadSerializer(serializers.Serializer):
-    search_criteria = serializers.DictField(child=SearchCriteriaSerializer(), required=False)
+    search_criteria = serializers.DictField(child=SearchCriteriaSerializer())
     searchSharedWith = serializers.BooleanField(required=False)
     searchPublic = serializers.BooleanField(required=False)
     searchMine = serializers.BooleanField(required=False)

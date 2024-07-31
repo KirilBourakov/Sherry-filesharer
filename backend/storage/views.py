@@ -51,11 +51,51 @@ class DirectoryAPI(APIView):
         return Response(status=status.HTTP_200_OK)
 
 class SearchAPI(APIView):
+    # TODO: allow anonymous users to search; simply code
     def post(self, request):
         serializer = SearchPayloadSerializer(data = request.data)
         if serializer.is_valid():
-            print(serializer.data)
-            return Response(status=status.HTTP_200_OK)
+            search_data = serializer.validated_data
+            directories = Directory.objects.all()
+            files = File.objects.all()
+            
+            fileQ = Q()
+            directoryQ = Q()
+            if search_data.get('searchSharedWith'):
+                fileQ |= Q(shared_with=request.user)
+                directoryQ |= Q(shared_with=request.user)
+            if search_data.get('searchPublic'):
+                fileQ |= Q(public=True)
+                directoryQ |= Q(public=True)
+            if search_data.get('searchMine'):
+                fileQ |= Q(author=request.user)
+                directoryQ |= Q(owner=request.user)
+            files = files.filter(fileQ)
+            directories = directories.filter(directoryQ)
+
+            for key in search_data['search_criteria']:
+                query_data = search_data['search_criteria'][key]
+                query = query_data['query']
+                if query_data['useTags']:
+                    directories = directories.filter(tags__icontains=query)
+                    files = files.filter(tags__icontains=query)
+                if query_data['useName']:
+                    directories = directories.filter(name__icontains=query)
+                    files = files.filter(filename__icontains=query)
+                if query_data['useOwner']:
+                    directories = directories.filter(owner__username__icontains=query)
+                    files = files.filter(author__username__icontains=query)
+                if query_data['useSharedWith']:
+                    directories = directories.filter(shared_with__username__icontains=query)
+                    files = files.filter(shared_with__username__icontains=query)
+    
+            directory_serializer = DirectoryContentDirectorySerializer(directories, many=True)
+            file_serializer = DirectoryContentFileSerializer(files, many=True)
+            data = {
+                'files': file_serializer.data,
+                'directories': directory_serializer.data
+            }
+            return Response(data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)       
 
 class DirectoryId(APIView):
