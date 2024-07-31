@@ -55,7 +55,7 @@ class SearchAPI(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
-    # TODO: allow anonymous users to search; simply code
+    # TODO: simplify code
     def post(self, request):
         serializer = SearchPayloadSerializer(data = request.data)
         if serializer.is_valid():
@@ -80,19 +80,23 @@ class SearchAPI(APIView):
             for key in search_data['search_criteria']:
                 query_data = search_data['search_criteria'][key]
                 query = query_data['query']
+                fileQ = Q()
+                directoryQ = Q()
                 if query_data['useTags']:
-                    directories = directories.filter(tags__icontains=query)
-                    files = files.filter(tags__icontains=query)
+                    fileQ |= Q(tags__icontains=query)
+                    directoryQ |= Q(tags__icontains=query)
                 if query_data['useName']:
-                    directories = directories.filter(name__icontains=query)
-                    files = files.filter(filename__icontains=query)
+                    fileQ |= Q(filename__icontains=query)
+                    directoryQ |= Q(name__icontains=query)
                 if query_data['useOwner']:
-                    directories = directories.filter(owner__username__icontains=query)
-                    files = files.filter(author__username__icontains=query)
+                    fileQ |= Q(author__username__icontains=query)
+                    directoryQ |= Q(owner__username__icontains=query)
                 if query_data['useSharedWith']:
-                    directories = directories.filter(shared_with__username__icontains=query)
-                    files = files.filter(shared_with__username__icontains=query)
-    
+                    fileQ |= Q(shared_with__username__icontains=query)
+                    directoryQ |= Q(shared_with__username__icontains=query)
+                files = files.filter(fileQ)
+                directories = directories.filter(directoryQ)
+
             directory_serializer = DirectoryContentDirectorySerializer(directories, many=True)
             file_serializer = DirectoryContentFileSerializer(files, many=True)
             data = {
