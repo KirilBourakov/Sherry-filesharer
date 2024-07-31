@@ -1,5 +1,6 @@
 import { useRef, useState } from "react"
 import { FaPlus, FaMinus } from "react-icons/fa";
+import { getToken } from "../../scripts/authentication";
 
 export default function Search(){
     const searchSharedWith = useRef();
@@ -7,7 +8,12 @@ export default function Search(){
     const searchMine = useRef();
 
     const [inputs, setInputs] = useState(1)
-    const [search, setSearch] = useState({})
+    const [search, setSearch] = useState({
+        search_criteria: {},
+        searchSharedWith: false,
+        searchPublic: false,
+        searchMine: false
+    })
 
     const createNumberArray = (num) => {
         return Array.from({ length: num }, (_, index) => index + 1);
@@ -21,19 +27,17 @@ export default function Search(){
         setSearch(copy)
     }
     const validQuery = () => {
-        const allSearchFalse = inputs.searchSharedWith === false && inputs.searchPublic === false && inputs.searchMine === false
+        const allSearchFalse = search.searchSharedWith === false && search.searchPublic === search && inputs.searchMine === false
         if (allSearchFalse){
+            console.log('asd')
             return false
         }
-        for (const [key, value] of Object.entries(search)) {
-            const isObject = typeof value === 'object' && !Array.isArray(value) && value !== null
-            if (isObject){
-                const hasATrueValue = value['query'] && (value['useTags'] || value['useName'] || value['useOwner'] || value['useSharedWith'])
-                if (hasATrueValue){
-                    return true
-                }
+        for (const [key, value] of Object.entries(search['search_criteria'])) {
+            const hasATrueValue = value['query'] && (value['useTags'] || value['useName'] || value['useOwner'] || value['useSharedWith'])
+            if (hasATrueValue){
+                return true
             }
-        }  
+        } 
         return false         
     }
 
@@ -42,8 +46,16 @@ export default function Search(){
         if (!validQuery()){
             return
         }
-
-        // todo: connect to database
+        console.log(JSON.stringify(search))
+        let response = await fetch('/storage/search', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${getToken().token}`,
+            },
+            method: 'POST',
+            body: JSON.stringify(search)
+        })
+        console.log(response.status)
     }
 
     return(
@@ -89,7 +101,7 @@ function Input({ num, search, updateSearch }){
     
     const update = () => {
         let copy = {...search}
-        copy[num] = {
+        copy['search_criteria'][num] = {
             'query': inputRef.current.value,
             'useTags': tags.current.checked,
             'useName': name.current.checked,
