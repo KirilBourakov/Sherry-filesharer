@@ -61,6 +61,19 @@ class CreateDirectorySerializer(serializers.ModelSerializer):
         except IntegrityError:
             raise serializers.ValidationError('A directory with this name already exists')
 
+class SearchCriteriaSerializer(serializers.Serializer):
+    query = serializers.CharField(required=False, allow_blank=True)
+    useTags = serializers.BooleanField(required=False)
+    useName = serializers.BooleanField(required=False)
+    useOwner = serializers.BooleanField(required=False)
+    useSharedWith = serializers.BooleanField(required=False)
+
+class SearchPayloadSerializer(serializers.Serializer):
+    search_criteria = serializers.DictField(child=SearchCriteriaSerializer(), required=False)
+    searchSharedWith = serializers.BooleanField(required=False)
+    searchPublic = serializers.BooleanField(required=False)
+    searchMine = serializers.BooleanField(required=False)
+
 class UploadSerializer(serializers.ModelSerializer):
     directory = serializers.CharField(max_length=100)
     

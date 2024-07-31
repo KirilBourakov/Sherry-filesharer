@@ -3,7 +3,7 @@ from django.http import FileResponse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer, FileSerializer, FileInfoSerializer
+from .serializers import DirectoryContentDirectorySerializer, DirectoryContentFileSerializer, UploadSerializer, CreateDirectorySerializer, FileSerializer, FileInfoSerializer, SearchPayloadSerializer
 from .models import File, Directory
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
@@ -49,6 +49,14 @@ class DirectoryAPI(APIView):
         directory = get_object_or_404(Directory, pk=id, author=request.user)
         directory.delete()
         return Response(status=status.HTTP_200_OK)
+
+class SearchAPI(APIView):
+    def post(self, request):
+        serializer = SearchPayloadSerializer(data = request.data)
+        if serializer.is_valid():
+            print(serializer.data)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)       
 
 class DirectoryId(APIView):
     permission_classes = [permissions.IsAuthenticated]
