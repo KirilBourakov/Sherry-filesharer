@@ -2,15 +2,48 @@ import { useRef, useState } from "react"
 import { FaPlus, FaMinus } from "react-icons/fa";
 
 export default function Search(){
+    const searchSharedWith = useRef();
+    const searchPublic = useRef();
+    const searchMine = useRef();
+
     const [inputs, setInputs] = useState(1)
     const [search, setSearch] = useState({})
 
     const createNumberArray = (num) => {
         return Array.from({ length: num }, (_, index) => index + 1);
     }
+    const update = () => {
+        let copy = {...search}
+        copy['searchSharedWith'] = searchSharedWith.current.checked
+        copy['searchPublic'] = searchMine.current.checked
+        copy['searchMine'] = searchPublic.current.checked
+
+        setSearch(copy)
+    }
+    const validQuery = () => {
+        const allSearchFalse = inputs.searchSharedWith === false && inputs.searchPublic === false && inputs.searchMine === false
+        if (allSearchFalse){
+            return false
+        }
+        for (const [key, value] of Object.entries(search)) {
+            const isObject = typeof value === 'object' && !Array.isArray(value) && value !== null
+            if (isObject){
+                const hasATrueValue = value['query'] && (value['useTags'] || value['useName'] || value['useOwner'] || value['useSharedWith'])
+                if (hasATrueValue){
+                    return true
+                }
+            }
+        }  
+        return false         
+    }
+
     const sendSearch = async (e) => {
         e.preventDefault()
-        console.log(JSON.stringify(search))
+        if (!validQuery()){
+            return
+        }
+
+        // todo: connect to database
     }
 
     return(
@@ -27,6 +60,21 @@ export default function Search(){
                         <FaPlus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs+1)}/>
                         <FaMinus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs-1)}/>
                     </div>  
+
+                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                        <input className="form-check-input" type="checkbox" id={`searchMine`} ref={searchMine} onChange={update}/>
+                        <label className="form-check-label mb-0" htmlFor={`searchMine`} style={{ marginLeft: '5px' }} >Search My Content</label>
+                    </div>
+
+                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                        <input className="form-check-input" type="checkbox" id={`searchSharedWith`} ref={searchSharedWith} onChange={update}/>
+                        <label className="form-check-label mb-0" htmlFor={`searchSharedWith`} style={{ marginLeft: '5px' }} >Search Content Shared With Me</label>
+                    </div>
+
+                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                        <input className="form-check-input" type="checkbox" id={`searchPublic`} ref={searchPublic} onChange={update}/>
+                        <label className="form-check-label mb-0" htmlFor={`searchPublic`} style={{ marginLeft: '5px' }} >Search Public Content</label>
+                    </div>
                 </form>
         </div>
     )
