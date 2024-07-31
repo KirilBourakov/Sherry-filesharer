@@ -1,6 +1,8 @@
 import { useRef, useState } from "react"
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { getToken } from "../../scripts/authentication";
+import Folder from '../../components/folder'
+import File from '../../components/file'
 
 export default function Search(){
     const searchSharedWith = useRef();
@@ -14,6 +16,7 @@ export default function Search(){
         searchPublic: false,
         searchMine: false
     })
+    const [content, setContent] = useState(null)
 
     const createNumberArray = (num) => {
         return Array.from({ length: num }, (_, index) => index + 1);
@@ -55,39 +58,60 @@ export default function Search(){
             method: 'POST',
             body: JSON.stringify(search)
         })
-        console.log(await response.json());
+        setContent(await response.json())
     }
 
     return(
         <div className="d-flex flex-column w-screen">
             <h1 className="mx-auto">Search</h1>
-            
-                <form className="mx-auto">
-                    {createNumberArray(inputs).map(c =>
-                        <Input num={c} search={search} updateSearch={setSearch} key={c}/>
-                    )}
+            <form className="mx-auto">
+                {createNumberArray(inputs).map(c =>
+                    <Input num={c} search={search} updateSearch={setSearch} key={c}/>
+                )}
 
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-primary me-auto" type="submit" onClick={(e) => {sendSearch(e)}}>Search</button>
-                        <FaPlus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs+1)}/>
-                        <FaMinus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs-1)}/>
-                    </div>  
+                <div className="d-flex align-items-center">
+                    <button className="btn btn-primary me-auto" type="submit" onClick={(e) => {sendSearch(e)}}>Search</button>
+                    <FaPlus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs+1)}/>
+                    <FaMinus style={{cursor: 'pointer'}} onClick={() => setInputs(inputs-1)}/>
+                </div>  
 
-                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchMine`} ref={searchMine} onChange={update}/>
-                        <label className="form-check-label mb-0" htmlFor={`searchMine`} style={{ marginLeft: '5px' }} >Search My Content</label>
+                <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                    <input className="form-check-input" type="checkbox" id={`searchMine`} ref={searchMine} onChange={update}/>
+                    <label className="form-check-label mb-0" htmlFor={`searchMine`} style={{ marginLeft: '5px' }} >Search My Content</label>
+                </div>
+
+                <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                    <input className="form-check-input" type="checkbox" id={`searchSharedWith`} ref={searchSharedWith} onChange={update}/>
+                    <label className="form-check-label mb-0" htmlFor={`searchSharedWith`} style={{ marginLeft: '5px' }} >Search Content Shared With Me</label>
+                </div>
+
+                <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
+                    <input className="form-check-input" type="checkbox" id={`searchPublic`} ref={searchPublic} onChange={update}/>
+                    <label className="form-check-label mb-0" htmlFor={`searchPublic`} style={{ marginLeft: '5px' }} >Search Public Content</label>
+                </div>
+            </form>
+            {content != null &&
+                <div className="container">
+                    <div className='row'>
+                        {content.directories &&
+                            content.directories.map(d => (
+                                d.show ? (
+                                    <Folder key={d.id} name={d.directory_name} path={d.path}/>
+                                ) : null
+                            ))
+                        }
                     </div>
-
-                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchSharedWith`} ref={searchSharedWith} onChange={update}/>
-                        <label className="form-check-label mb-0" htmlFor={`searchSharedWith`} style={{ marginLeft: '5px' }} >Search Content Shared With Me</label>
-                    </div>
-
-                    <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchPublic`} ref={searchPublic} onChange={update}/>
-                        <label className="form-check-label mb-0" htmlFor={`searchPublic`} style={{ marginLeft: '5px' }} >Search Public Content</label>
-                    </div>
-                </form>
+                    <div className='row'>
+                        {content.files &&
+                            content.files.map(d => (
+                                d.show ? (
+                                    <File key={d.id} filename={d.filename} fileid={d.id} />
+                                ) : null  
+                            ))
+                        }      
+                    </div>     
+                </div>
+            }
         </div>
     )
 }
