@@ -21,8 +21,8 @@ export default function Search(){
     const update = () => {
         let copy = {...search}
         copy['searchSharedWith'] = searchSharedWith.current.checked
-        copy['searchPublic'] = searchMine.current.checked
-        copy['searchMine'] = searchPublic.current.checked
+        copy['searchPublic'] = searchPublic.current.checked 
+        copy['searchMine'] = searchMine.current.checked
 
         setSearch(copy)
     }
@@ -55,7 +55,7 @@ export default function Search(){
             method: 'POST',
             body: JSON.stringify(search)
         })
-        console.log(response.status)
+        console.log(await response.json());
     }
 
     return(
