@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
-import { checkLoginAndRedirect, getToken } from '../../../scripts/authentication'
+import { getToken } from '../../../scripts/authentication'
 import SharedWith from './SharedWith';
 import Tags from './Tags';
 import FileName from './FileName';
@@ -15,7 +15,7 @@ export default function Description(){
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
     useEffect(() => {
-        checkLoginAndRedirect()
+        // TODO: do something if user tries to access a file they have no permission to access
         getdata();
       }, [id, update]);
 

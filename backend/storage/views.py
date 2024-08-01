@@ -10,6 +10,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions, status, viewsets, parsers
+from knox.auth import TokenAuthentication
 
 # Create your views here.
 class DirectoryAPI(APIView):
@@ -115,14 +116,26 @@ class DirectoryId(APIView):
         }, status=status.HTTP_200_OK)
 
 class FileAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+    
+    def get_authenticators(self):
+        if self.request.method == 'GET':
+            return []
+        return [TokenAuthentication()]
+
     parser_classes = [parsers.MultiPartParser]
 
     def get(self, request, *args, **kwargs):
         requested_file = request.GET.get('file', None)
         if requested_file is None:
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
-        allowed = Q(pk=requested_file, author=request.user) | Q(pk=requested_file, shared_with=request.user)
+        if request.user.is_authenticated:
+            allowed = Q(pk=requested_file, author=request.user) | Q(pk=requested_file, shared_with=request.user)
+        else:
+            allowed = Q(pk=requested_file, public=True)
         try:
             file = File.objects.filter(allowed)[0]
         except File.DoesNotExist:
@@ -149,7 +162,15 @@ class FileAPI(APIView):
         return Response(status=status.HTTP_200_OK)
     
 class FileInfoAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+    
+    def get_authenticators(self):
+        if self.request.method == 'GET':
+            return []
+        return [TokenAuthentication()]
 
     def get(self, request, *args, **kwargs):
         requested_file = request.GET.get('file', None)
@@ -157,7 +178,10 @@ class FileInfoAPI(APIView):
             return Response({'error': 'no file requested'}, status=status.HTTP_400_BAD_REQUEST) 
         
         try:
-            file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user)).filter(id=requested_file)[0]
+            if request.user.is_authenticated:
+                file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user)).filter(id=requested_file)[0]
+            else:
+                file =  File.objects.filter(id=requested_file).filter(public=True)[0]
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
