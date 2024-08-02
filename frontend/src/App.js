@@ -13,7 +13,6 @@ import Login from './pages/login';
 import Storage from './pages/storage';
 import LogoutView from './pages/logout';
 import Item from './pages/preview';
-import PublicPath from './pages/public';
 import Search from './pages/search';
 
 export const UseKeyHook = createContext()
@@ -30,20 +29,16 @@ function App() {
             {/* unprotected routes */}
             <Route path="/" element={<Home/>} />
             <Route path="/search" element={<Search/>}/>
+            <Route path="/item/:id" element={<Item />}/>
 
             {/* login/out */}
             <Route path="/Create-account" element={<CreateAccount/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/logout" element={<LogoutView/>}/>
             
-
             {/* protected routes */}
-            <Route path="/item/:id" element={<Item />}/>
             <Route path="/storage" element={<Storage />}/>
             <Route path="/storage/*" element={<Storage />}/>
-
-            {/* old */}
-            <Route path="/public" element={key ? <PublicPath /> : <Navigate to="/login"/>}/>
               
           </Routes>
         </div>
