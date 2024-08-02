@@ -188,7 +188,7 @@ function Input({ num, search, updateSearch }){
 
                 <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
                     <input className="form-check-input" type="checkbox" id={`searchSharedWith${num}`} ref={sharedWith} onChange={update} defaultChecked />
-                    <label className="form-check-label mb-0" htmlFor={`searchSharedWith${num}`} style={{ marginLeft: '5px' }} >Search Owners</label>
+                    <label className="form-check-label mb-0" htmlFor={`searchSharedWith${num}`} style={{ marginLeft: '5px' }} >Search Shared Content</label>
                 </div>
 
             </div>
