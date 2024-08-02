@@ -1,24 +1,44 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { getToken } from "../../scripts/authentication";
 import Folder from '../../components/folder'
 import File from '../../components/file'
 import Toast from "../../components/toast";
+import { useLocation } from "react-router-dom";
 
 export default function Search(){
     const searchSharedWith = useRef();
     const searchPublic = useRef();
     const searchMine = useRef();
+    const location = useLocation();
 
     const [inputs, setInputs] = useState(1)
     const [search, setSearch] = useState({
         search_criteria: {},
-        searchSharedWith: false,
-        searchPublic: false,
-        searchMine: false
+        searchSharedWith: true,
+        searchPublic: true,
+        searchMine: true
     })
     const [content, setContent] = useState(null)
     const [toasts, setToasts] = useState([])
+
+    useEffect(() => {
+        console.log(location)
+        if (location.state && location.state.query){
+            let copy = {...search}
+            copy['search_criteria'][0] = {
+                'query': location.state.query,
+                'useTags': true,
+                'useName': true,
+                'useOwner': true,
+                'useSharedWith': true,
+            }
+            setSearch(copy)
+            document.getElementById('input1').value = location.state.query
+
+            sendSearch()
+        }
+    }, [location])
 
     const createNumberArray = (num) => {
         return Array.from({ length: num }, (_, index) => index + 1);
@@ -45,17 +65,17 @@ export default function Search(){
                 return true
             }
         }
-        let copy = [...toasts, {title: 'alert', body: 'You must have a search condition that has a selected switch.'}]
+        let copy = [...toasts, {title: 'alert', body: 'You must have a search condition that has a selected switch, as well as a query.'}]
         setToasts(copy) 
         return false         
     }
 
     const sendSearch = async (e) => {
-        e.preventDefault()
+        if (e) e.preventDefault()
         if (!validQuery()){
             return
         }
-        console.log(JSON.stringify(search))
+        
         let response = await fetch('/storage/search', {
             headers: {
                 'Content-Type': 'application/json',
@@ -83,17 +103,17 @@ export default function Search(){
                     </div>  
 
                     <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchMine`} ref={searchMine} onChange={update}/>
+                        <input className="form-check-input" type="checkbox" id={`searchMine`} ref={searchMine} onChange={update} defaultChecked />
                         <label className="form-check-label mb-0" htmlFor={`searchMine`} style={{ marginLeft: '5px' }} >Search My Content</label>
                     </div>
 
                     <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchSharedWith`} ref={searchSharedWith} onChange={update}/>
+                        <input className="form-check-input" type="checkbox" id={`searchSharedWith`} ref={searchSharedWith} onChange={update} defaultChecked />
                         <label className="form-check-label mb-0" htmlFor={`searchSharedWith`} style={{ marginLeft: '5px' }} >Search Content Shared With Me</label>
                     </div>
 
                     <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input className="form-check-input" type="checkbox" id={`searchPublic`} ref={searchPublic} onChange={update}/>
+                        <input className="form-check-input" type="checkbox" id={`searchPublic`} ref={searchPublic} onChange={update} defaultChecked />
                         <label className="form-check-label mb-0" htmlFor={`searchPublic`} style={{ marginLeft: '5px' }} >Search Public Content</label>
                     </div>
                 </form>
@@ -152,22 +172,22 @@ function Input({ num, search, updateSearch }){
             <div className="d-flex align-items-center">
 
                 <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                    <input className="form-check-input" type="checkbox" id={`searchTags${num}`} ref={tags} onChange={update}/>
+                    <input className="form-check-input" type="checkbox" id={`searchTags${num}`} ref={tags} onChange={update} defaultChecked />
                     <label className="form-check-label mb-0" htmlFor={`searchTags${num}`} style={{ marginLeft: '5px' }}>Search Tags</label>
                 </div>
 
                 <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                    <input className="form-check-input" type="checkbox" id={`searchName${num}`} ref={name} onChange={update}/>
+                    <input className="form-check-input" type="checkbox" id={`searchName${num}`} ref={name} onChange={update} defaultChecked />
                     <label className="form-check-label mb-0" htmlFor={`searchName${num}`} style={{ marginLeft: '5px' }} >Search Name</label>
                 </div>
 
                 <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                    <input className="form-check-input" type="checkbox" id={`searchOwners${num}`} ref={owner} onChange={update}/>
+                    <input className="form-check-input" type="checkbox" id={`searchOwners${num}`} ref={owner} onChange={update} defaultChecked />
                     <label className="form-check-label mb-0" htmlFor={`searchOwners${num}`} style={{ marginLeft: '5px' }} >Search Owners</label>
                 </div>
 
                 <div className="form-check form-switch ms-1" style={{ display: 'flex', alignItems: 'center' }}>
-                    <input className="form-check-input" type="checkbox" id={`searchSharedWith${num}`} ref={sharedWith} onChange={update}/>
+                    <input className="form-check-input" type="checkbox" id={`searchSharedWith${num}`} ref={sharedWith} onChange={update} defaultChecked />
                     <label className="form-check-label mb-0" htmlFor={`searchSharedWith${num}`} style={{ marginLeft: '5px' }} >Search Owners</label>
                 </div>
 
