@@ -6,6 +6,7 @@ import File from '../../components/file'
 import Toast from "../../components/toast";
 import { useLocation } from "react-router-dom";
 
+// todo: add something that pops up when nothing is found
 export default function Search(){
     const searchSharedWith = useRef();
     const searchPublic = useRef();

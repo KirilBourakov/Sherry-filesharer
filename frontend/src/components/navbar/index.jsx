@@ -7,7 +7,7 @@ import { isLoggedIn } from '../../scripts/authentication'
 export default function Navbar(){
     const [visible, setVisible] = useState()
     const [authenticated, setAuthenticated] = useState(false)
-
+    // TODO: make sure the navbar is always accurate, currently a reload is needed after login
     useEffect(() => {
         const checkLoginStatus = async () => {
             const isAuthenticated = await isLoggedIn();
