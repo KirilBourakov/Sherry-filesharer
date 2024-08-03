@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import{ Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
-import { getToken, clearUser } from '../../scripts/authentication'
+import { getToken, clearUser, logout } from '../../scripts/authentication'
 
 export default function UserName() {
     const [user, setUser] = useState([])
@@ -15,8 +15,7 @@ export default function UserName() {
                 }
             })
             if (response.status !== 200){
-                // TODO: replace clearUser with logout function
-                clearUser()
+                logout()
                 alert('Seems something went wrong. We have done our best to log you out. Please Login again.')
                 return nav("/login")
             }
