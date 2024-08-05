@@ -46,7 +46,7 @@ function FilePreview({extension, setFileAccessible}){
                     "Authorization": `Token ${getToken().token}`,
                 }
             })
-            if (response.status === 401){
+            if (response.status !== 200){
                 setFileAccessible(false)
                 return
             }

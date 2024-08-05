@@ -15,7 +15,7 @@ export default function Description({ setFileAccessible }){
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
     useEffect(() => {
-        // TODO: do something if user tries to access a file they have no permission to access
+        // TODO: add more precies handling of bad responses (401, 404, etc)
         getdata();
       }, [id, update]);
 
@@ -25,7 +25,7 @@ export default function Description({ setFileAccessible }){
                 "Authorization": `Token ${getToken().token}`,
             }
         })
-        if (response.status === 401){
+        if (response.status !== 200){
             setFileAccessible(false)
             return
         }
