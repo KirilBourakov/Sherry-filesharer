@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { logout } from '../../scripts/authentication';
 import { useNavigate } from 'react-router-dom';
 
+// TODO fix issues with logout
 export default function Logout(){
     const nav = useNavigate()
     useEffect(() => {
