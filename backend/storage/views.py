@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions, status, viewsets, parsers
 from knox.auth import TokenAuthentication
+from .authenticators import OptionalTokenAuthentication
 
 # Create your views here.
 class DirectoryAPI(APIView):
@@ -121,11 +122,7 @@ class FileAPI(APIView):
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
     
-    def get_authenticators(self):
-        if self.request.method == 'GET':
-            return []
-        return [TokenAuthentication()]
-
+    authentication_classes = [OptionalTokenAuthentication]
     parser_classes = [parsers.MultiPartParser]
 
     def get(self, request, *args, **kwargs):
@@ -137,7 +134,7 @@ class FileAPI(APIView):
         else:
             allowed = Q(pk=requested_file, public=True)
         try:
-            file = File.objects.filter(allowed)[0]
+            file = File.objects.filter(allowed).first()
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)    
         response = FileResponse(file.file.open(), filename=file.filename)
@@ -166,11 +163,7 @@ class FileInfoAPI(APIView):
         if self.request.method == 'GET':
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
-    
-    def get_authenticators(self):
-        if self.request.method == 'GET':
-            return []
-        return [TokenAuthentication()]
+    authentication_classes = [OptionalTokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         requested_file = request.GET.get('file', None)
@@ -179,9 +172,9 @@ class FileInfoAPI(APIView):
         
         try:
             if request.user.is_authenticated:
-                file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user)).filter(id=requested_file)[0]
+                file = File.objects.filter(Q(author=request.user) | Q(shared_with=request.user)).filter(id=requested_file).first()
             else:
-                file =  File.objects.filter(id=requested_file).filter(public=True)[0]
+                file =  File.objects.filter(public=True).filter(id=requested_file).first()
         except File.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
