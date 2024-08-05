@@ -44,6 +44,9 @@ export async function isLoggedIn(){
     const token = getToken()
     const tokenUndefined = (token.token === undefined || token.token === null)
     const tokenExpired = (token.token === undefined || token.token === null || new Date() > new Date(token.expiry))
+    if (tokenExpired){
+        clearUser()
+    }
     if (tokenUndefined || tokenExpired){
         return Promise.resolve(false)
     }
