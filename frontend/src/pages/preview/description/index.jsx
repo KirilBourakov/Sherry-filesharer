@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, createContext } from 'react';
 import { getToken } from '../../../scripts/authentication'
 import SharedWith from './SharedWith';
@@ -10,7 +10,7 @@ export const updateContext = createContext()
 export const tagContext = createContext()
 export const shareContext = createContext()
 
-export default function Description(){
+export default function Description({ setFileAccessible }){
     const [userdata, setuserdata] = useState(null);
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
@@ -19,16 +19,19 @@ export default function Description(){
         getdata();
       }, [id, update]);
 
-    const getdata = () => {
-        fetch(`/storage/fileInfo?file=${id}`, {
+    const getdata = async () => {
+        let response = await fetch(`/storage/fileInfo?file=${id}`, {
             headers: {
                 "Authorization": `Token ${getToken().token}`,
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            setuserdata(data)
-        });
+        if (response.status === 401){
+            setFileAccessible(false)
+            return
+        }
+    
+        response = await response.json()
+        setuserdata(response)
     };
 
     const forceUpdate = () => {

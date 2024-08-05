@@ -26,7 +26,7 @@ export async function logout(){
         method: 'POST'
     });
 
-    if (response.status == 204 || response.status == 401){
+    if (response.status === 204 || response.status === 401){
         clearUser()
         return  Promise.resolve(true)
     }
