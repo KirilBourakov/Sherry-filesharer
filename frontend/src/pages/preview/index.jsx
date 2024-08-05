@@ -8,7 +8,7 @@ import FileNotAccessible from '../../components/fileNotAccessible'
 
 export default function Preview(props){
     let location = useLocation();
-    const extension = location.state.extension
+    const extension = location.state ? location.state.extension : null
     const [fileAccessible, setFileAccessible] = useState(true)
 
     if (!fileAccessible){
