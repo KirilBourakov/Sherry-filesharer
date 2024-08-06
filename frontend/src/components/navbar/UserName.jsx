@@ -17,8 +17,8 @@ export default function UserName() {
                 }
             })
             if (response.status !== 200){
-                logout()
-                alert('Seems something went wrong. We have done our best to log you out. Please Login again.')
+                await logout()
+                setAuthObj(getToken())
                 return nav("/login")
             }
             const body = await response.json()
