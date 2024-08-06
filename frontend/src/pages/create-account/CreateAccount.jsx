@@ -22,6 +22,7 @@ export default function CreateAccount() {
     const conpassRef = createRef();
 
     const createaccount = async () => {
+        // TODO: use email, or remove it
         const usernameValue = usernameRef.current.value;
         const emailValue = emailRef.current.value;
         const passwordValue = passwordRef.current.value;
