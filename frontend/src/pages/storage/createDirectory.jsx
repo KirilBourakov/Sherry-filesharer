@@ -1,8 +1,10 @@
-import { createRef, useState } from 'react';
+import { createRef, useContext, useState } from 'react';
 import AlertDanger from '../../components/AlertDanger';
-import { getToken } from '../../scripts/authentication';
+import { AuthContext } from '../../components/providers/authProvider';
 
 export default function CreateDirectory(props){
+    const { authObj, setAuthObj } = useContext(AuthContext)
+
     const nameRef = createRef();
     const tagRef = createRef();
 
@@ -17,7 +19,7 @@ export default function CreateDirectory(props){
         let response = await fetch(`/storage/directory`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${getToken().token}`,
+                'Authorization': `Token ${authObj.token}`,
             },
             method: 'POST',
             body: JSON.stringify({

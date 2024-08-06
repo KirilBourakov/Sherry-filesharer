@@ -1,8 +1,8 @@
 import { motion } from "framer-motion"
 import EditVisibility from "./editVisibility"
-import { createRef } from "react"
-import { getToken } from "../../../scripts/authentication";
+import { createRef, useContext } from "react"
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../components/providers/authProvider";
 
 const variants = {
     HoverButton:{
@@ -19,12 +19,14 @@ const variants = {
 
 const tagsRef = createRef()
 export default function Edit({ isPublic, shared_with, tags, id, update }){
+    const { authObj, setAuthObj } = useContext(AuthContext)
+    
     const nav = useNavigate()
     const updateTags = async () => {
         const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Token ${getToken().token}`,  
+                "Authorization": `Token ${authObj.token}`,  
             },
             method: 'PATCH',
             body: JSON.stringify({
@@ -40,7 +42,7 @@ export default function Edit({ isPublic, shared_with, tags, id, update }){
     const deleteFile = async () => {
         const response = await fetch(`/storage/file?file=${id}`, {
             headers: {
-                "Authorization": `Token ${getToken().token}`,  
+                "Authorization": `Token ${authObj.token}`,  
             },
             method: 'DELETE',
         })

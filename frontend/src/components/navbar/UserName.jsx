@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import{ Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import { getToken, clearUser, logout } from '../../scripts/authentication'
+import { AuthContext } from "../providers/authProvider";
 
 export default function UserName() {
     const [user, setUser] = useState([])
+    const { authObj, setAuthObj } = useContext(AuthContext)
+    
     const nav = useNavigate()
     // TODO: rework this component
     useEffect(() =>{
         const getUser = async () =>{
-            console.log(getToken().token)
             const response = await fetch(`/user/get`, {
                 headers: {
-                    "Authorization": `Token ${getToken().token}`,
+                    "Authorization": `Token ${authObj.token}`,
                 }
             })
             if (response.status !== 200){

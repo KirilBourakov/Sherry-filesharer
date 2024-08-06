@@ -1,11 +1,12 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { images, text, pdf } from '../../scripts/fileExtensions'
 import { motion } from 'framer-motion';
-import { getToken } from '../../scripts/authentication';
 import Description from './description';
 import FileNotAccessible from '../../components/fileNotAccessible'
+import { AuthContext } from '../../components/providers/authProvider';
 
+// TODO: deal with above error
 export default function Preview(props){
     let location = useLocation();
     const extension = location.state ? location.state.extension : null
@@ -39,11 +40,13 @@ export default function Preview(props){
 function FilePreview({extension, setFileAccessible}){
     const { id } = useParams();
     const [fileURL, setFileURL] = useState(null)
+    const { authObj, setAuthObj } = useContext(AuthContext)
+
     useEffect(() => {
         const getFile = async () => {
             let response = await fetch(`/storage/file?file=${id}`, {
                 headers: {
-                    "Authorization": `Token ${getToken().token}`,
+                    "Authorization": `Token ${authObj.token}`,
                 }
             })
             if (response.status !== 200){

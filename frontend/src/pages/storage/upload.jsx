@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
-import { createRef, useState } from 'react';
+import { createRef, useContext, useState } from 'react';
 import AlertDanger from '../../components/AlertDanger';
 import AlertSuccess from '../../components/AlertSuccess';
-import { getToken } from '../../scripts/authentication';
+import { AuthContext } from '../../components/providers/authProvider';
 
 const variants = {
     HoverSubmitFile:{
@@ -29,6 +29,8 @@ const variants = {
 };
 
 export default function Upload(props){
+    const { authObj, setAuthObj } = useContext(AuthContext)
+
     const [uploadPrecentage, changeUploadPrecentage] = useState(0);
     const fileRef = createRef();
     const tagRef = createRef();
@@ -59,10 +61,10 @@ export default function Upload(props){
         formData.append('filename', file.name)
         formData.append('directory', props.directory)
         formData.append('tags', tagRef.current.value)
-        const token = getToken().token
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/storage/file', true);
-        xhr.setRequestHeader('Authorization', `Token ${token}`);
+        xhr.setRequestHeader('Authorization', `Token ${authObj.token}`);
 
         const promise = new Promise((resolve, reject) => {
             xhr.onload = () => {

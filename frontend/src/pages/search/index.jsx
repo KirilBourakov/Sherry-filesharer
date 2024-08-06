@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { getToken } from "../../scripts/authentication";
 import Folder from '../../components/folder'
 import File from '../../components/file'
 import Toast from "../../components/toast";
 import { useLocation } from "react-router-dom";
 import { TbFaceIdError } from "react-icons/tb";
+import { AuthContext } from "../../components/providers/authProvider";
 
 export default function Search(){
+    const { authObj, setAuthObj } = useContext(AuthContext)
+
     const searchSharedWith = useRef();
     const searchPublic = useRef();
     const searchMine = useRef();
@@ -80,7 +82,7 @@ export default function Search(){
         let response = await fetch('/storage/search', {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${getToken().token}`,
+                'Authorization': `Token ${authObj.token}`,
             },
             method: 'POST',
             body: JSON.stringify(search)

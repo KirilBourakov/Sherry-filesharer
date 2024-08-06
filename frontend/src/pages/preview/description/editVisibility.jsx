@@ -1,9 +1,9 @@
 import { createRef, useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { getToken } from "../../../scripts/authentication";
 import AlertDanger from "../../../components/AlertDanger";
 import AlertSuccess from '../../../components/AlertSuccess'
+import { AuthContext } from "../../../components/providers/authProvider";
 
 const variants = {
     HoverButton:{
@@ -23,6 +23,7 @@ export default function EditVisibility(props){
     const pub = props.isPublic
     const shared = props.shared
     const update = props.update
+    const { authObj, setAuthObj } = useContext(AuthContext)
 
     //error state
     const [errorView, setErrorView] = useState(false)
@@ -40,7 +41,7 @@ export default function EditVisibility(props){
         const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Token ${getToken().token}`,  
+                "Authorization": `Token ${authObj.token}`,  
             },
             method: 'PATCH',
             body: JSON.stringify({
@@ -58,7 +59,7 @@ export default function EditVisibility(props){
         const response = await fetch(`/storage/fileInfo/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Token ${getToken().token}`,  
+                "Authorization": `Token ${authObj.token}`,  
             },
             method: 'POST',
             body: JSON.stringify({

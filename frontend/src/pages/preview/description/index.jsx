@@ -1,16 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, createContext } from 'react';
-import { getToken } from '../../../scripts/authentication'
+import { useState, useEffect, createContext, useContext } from 'react';
 import SharedWith from './SharedWith';
 import Tags from './Tags';
 import FileName from './FileName';
 import Edit from './edit';
+import { AuthContext } from '../../../components/providers/authProvider';
 
 export const updateContext = createContext()
 export const tagContext = createContext()
 export const shareContext = createContext()
 
 export default function Description({ setFileAccessible }){
+    const { authObj, setAuthObj } = useContext(AuthContext)
     const [userdata, setuserdata] = useState(null);
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
@@ -22,7 +23,7 @@ export default function Description({ setFileAccessible }){
     const getdata = async () => {
         let response = await fetch(`/storage/fileInfo?file=${id}`, {
             headers: {
-                "Authorization": `Token ${getToken().token}`,
+                "Authorization": `Token ${authObj.token}`,
             }
         })
         if (response.status !== 200){

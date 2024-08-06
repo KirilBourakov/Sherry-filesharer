@@ -1,17 +1,18 @@
 import { motion } from "framer-motion";
 import { useParams } from 'react-router-dom'; 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Content from './contents';
 import Upload from './upload';
 import LocalSearch from './localSearch'
 import New from './new'
 import CreateDirectory from "./createDirectory";
-import { getToken } from "../../scripts/authentication";
 import { useLocation } from 'react-router-dom';
 import { checkLoginAndRedirect } from "../../scripts/authentication";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../components/providers/authProvider";
 
 export default function Main(){
+    const { authObj, setAuthObj } = useContext(AuthContext)
     const nav = useNavigate()
     const location = useLocation();
 
@@ -37,7 +38,7 @@ export default function Main(){
         let response = await fetch(`/storage/directory?path=${path}`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${getToken().token}`,
+                'Authorization': `Token ${authObj.token}`,
             },
             method: 'get',
         })

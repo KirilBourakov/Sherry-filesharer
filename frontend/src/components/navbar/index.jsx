@@ -1,23 +1,17 @@
 import UserName from './UserName';
 import SearchBar from './search';
 import HamburgerMenu from './hamburger';
-import { useState, useEffect } from "react"
-import { isLoggedIn } from '../../scripts/authentication'
+import { useState, useEffect, useContext } from "react"
+import { AuthContext } from '../providers/authProvider';
+
 
 export default function Navbar(){
     const [visible, setVisible] = useState()
-    const [authenticated, setAuthenticated] = useState(false)
-    // TODO: make sure the navbar is always accurate, currently a reload is needed after login (login should be put into state so that the nav reloads)
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            const isAuthenticated = await isLoggedIn();
-            setAuthenticated(isAuthenticated);
-        };
-        checkLoginStatus();
-    }, []);
+    const { authObj, setAuthObj } = useContext(AuthContext)
+
     return(
         <nav className={`navbar navbar-expand-lg navbar-light sticky-top bg-light ${visible ? '' : 'shadow'}`}>
-            {authenticated ? 
+            {authObj.token != null ? 
                 <>
                     <UserName />
                     <div className='ms-auto'>

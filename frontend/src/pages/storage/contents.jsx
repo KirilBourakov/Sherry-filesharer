@@ -1,10 +1,5 @@
 import File from '../../components/file'
 import Folder from '../../components/folder';
-import { useEffect, useState } from 'react';
-import { checkLoginAndRedirect } from '../../scripts/authentication'
-import { useNavigate } from 'react-router-dom'
-import { getToken } from '../../scripts/authentication'
-import { useLocation } from 'react-router-dom';
 
 export default function Contents({content}){
 
