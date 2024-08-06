@@ -10,10 +10,13 @@ export const updateContext = createContext()
 export const tagContext = createContext()
 export const shareContext = createContext()
 
-export default function Description({ setFileAccessibleCode }){
-    const { authObj, setAuthObj } = useContext(AuthContext)
+export default function Description({ setFileAccessibleCode, extensionObj }){
     const [userdata, setuserdata] = useState(null);
     const [update, forceupdate] = useState(0);
+    const { extension, setExtension } = extensionObj
+
+    const { authObj, setAuthObj } = useContext(AuthContext)
+    
     const { id } = useParams();
     useEffect(() => {
         getdata();
@@ -32,6 +35,9 @@ export default function Description({ setFileAccessibleCode }){
     
         response = await response.json()
         setuserdata(response)
+
+        const parts = response.filename.split('.');
+        setExtension(parts.length > 1 ? parts.pop().toLowerCase() : null)
     };
 
     const forceUpdate = () => {
