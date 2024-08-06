@@ -6,7 +6,6 @@ import Description from './description';
 import FileNotAccessible from '../../components/fileNotAccessible'
 import { AuthContext } from '../../components/providers/authProvider';
 
-// TODO: deal with above error
 export default function Preview(props){
     let location = useLocation();
     const extension = location.state ? location.state.extension : null

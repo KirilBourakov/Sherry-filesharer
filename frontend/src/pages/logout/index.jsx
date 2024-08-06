@@ -4,7 +4,6 @@ import { AuthContext } from '../../components/providers/authProvider'
 import { logout, getToken } from '../../scripts/authentication';
 import { useNavigate } from 'react-router-dom';
 
-// TODO fix issues with logout
 export default function Logout(){
     const { authObj, setAuthObj } = useContext(AuthContext)
     

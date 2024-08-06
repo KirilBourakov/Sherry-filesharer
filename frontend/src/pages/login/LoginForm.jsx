@@ -14,7 +14,7 @@ export default function LoginForm(){
     const [alertView, changeAlertView] = useState(false);
     const [AlertText, setAlertText] = useState('')
     const { authObj, setAuthObj } = useContext(AuthContext)
-    // TODO: USE THE CONTEXT ABOVE
+    
     const nav = useNavigate();
     
     const usernameRef = createRef()
