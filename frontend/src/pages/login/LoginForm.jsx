@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
-import { UseKeyHook } from '../../App';
+import { AuthContext } from '../../components/providers/authProvider'
 import AlertDanger from '../../components/AlertDanger';
 import { login } from './../../scripts/authentication'
 
@@ -13,7 +13,8 @@ const variants = {
 export default function LoginForm(){
     const [alertView, changeAlertView] = useState(false);
     const [AlertText, setAlertText] = useState('')
-    const KeyContext = useContext(UseKeyHook);
+    const authContext = useContext(AuthContext);
+    // TODO: USE THE CONTEXT ABOVE
     const nav = useNavigate();
     
     const usernameRef = createRef()

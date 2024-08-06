@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { createRef, useContext, useState } from 'react';
 import{ Link, useNavigate } from 'react-router-dom';
-import { UseKeyHook } from '../../App';
+import { AuthContext } from '../../components/providers/authProvider'
 import { getCookie } from '../../scripts/cookies'
 
 const variants = {
@@ -13,8 +13,8 @@ export default function CreateAccount() {
     const [alertShow, changeAlertShow] = useState(false);
     const [alertText, changeAlertText] = useState('');
     const nav = useNavigate()
-    const KeyContext = useContext(UseKeyHook)
-
+    const authContext = useContext(AuthContext)
+    // TODO: USE THE CONTEXT ABOVE
     //create ref
     const usernameRef = createRef();
     const emailRef = createRef();

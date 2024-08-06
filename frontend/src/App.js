@@ -15,12 +15,12 @@ import LogoutView from './pages/logout';
 import Item from './pages/preview';
 import Search from './pages/search';
 
-export const UseKeyHook = createContext()
+// providers
+import AuthProvider from './components/providers/authProvider';
 
 function App() {
-  const [key, setkey] = useState(window.localStorage.getItem('key'))
   return (
-    <UseKeyHook.Provider value={setkey}>
+    <AuthProvider>
       <Router>
         <Navbar/>
         <div>
@@ -43,7 +43,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </UseKeyHook.Provider>
+    </AuthProvider>
   );
 };
 
