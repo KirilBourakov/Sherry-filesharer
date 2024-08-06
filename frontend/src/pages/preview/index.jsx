@@ -9,10 +9,10 @@ import { AuthContext } from '../../components/providers/authProvider';
 export default function Preview(props){
     let location = useLocation();
     const extension = location.state ? location.state.extension : null
-    const [fileAccessible, setFileAccessible] = useState(true)
+    const [fileAccessibleCode, setFileAccessibleCode] = useState(200)
 
-    if (!fileAccessible){
-        return <FileNotAccessible />
+    if (fileAccessibleCode !== 200){
+        return <FileNotAccessible error={fileAccessibleCode}/>
     }
 
     // use effect to get file info
@@ -26,17 +26,17 @@ export default function Preview(props){
         className="container">
             <div className="row">
                 <div className="col-12 col-md-8 mt-3">
-                    <FilePreview extension={extension} setFileAccessible={setFileAccessible}/>
+                    <FilePreview extension={extension} setFileAccessibleCode={setFileAccessibleCode}/>
                 </div>
                 <div className="col-12 col-md-4 mt-3">
-                    <Description setFileAccessible={setFileAccessible}/>
+                    <Description setFileAccessibleCode={setFileAccessibleCode}/>
                 </div>
             </div>
         </motion.div>
     );
 }
 
-function FilePreview({extension, setFileAccessible}){
+function FilePreview({extension, setFileAccessibleCode}){
     const { id } = useParams();
     const [fileURL, setFileURL] = useState(null)
     const { authObj, setAuthObj } = useContext(AuthContext)
@@ -49,7 +49,7 @@ function FilePreview({extension, setFileAccessible}){
                 }
             })
             if (response.status !== 200){
-                setFileAccessible(false)
+                setFileAccessibleCode(false)
                 return
             }
             

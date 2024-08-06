@@ -10,13 +10,12 @@ export const updateContext = createContext()
 export const tagContext = createContext()
 export const shareContext = createContext()
 
-export default function Description({ setFileAccessible }){
+export default function Description({ setFileAccessibleCode }){
     const { authObj, setAuthObj } = useContext(AuthContext)
     const [userdata, setuserdata] = useState(null);
     const [update, forceupdate] = useState(0);
     const { id } = useParams();
     useEffect(() => {
-        // TODO: add more precies handling of bad responses (401, 404, etc)
         getdata();
       }, [id, update]);
 
@@ -27,7 +26,7 @@ export default function Description({ setFileAccessible }){
             }
         })
         if (response.status !== 200){
-            setFileAccessible(false)
+            setFileAccessibleCode(response.status)
             return
         }
     
