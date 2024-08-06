@@ -3,6 +3,7 @@ import { createRef, useContext, useState } from 'react';
 import{ Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../components/providers/authProvider'
 import { getCookie } from '../../scripts/cookies'
+import { register, login, getToken } from '../../scripts/authentication'
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -13,8 +14,8 @@ export default function CreateAccount() {
     const [alertShow, changeAlertShow] = useState(false);
     const [alertText, changeAlertText] = useState('');
     const nav = useNavigate()
-    const authContext = useContext(AuthContext)
-    // TODO: USE THE CONTEXT ABOVE
+    const { authObj, setAuthObj } = useContext(AuthContext)
+    
     //create ref
     const usernameRef = createRef();
     const emailRef = createRef();
@@ -37,18 +38,10 @@ export default function CreateAccount() {
             alert('Passwords must match.');
             return true;
         };  
-        let response = await fetch(`user/auth/register`, { 
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                username: usernameValue,
-                password: passwordValue,
-            })
-        })
-        if (response.status === 201){
+        let response = await register(usernameValue, passwordValue)
+        if (response === 201){
+            let response = await login(usernameValue, passwordValue)
+            setAuthObj(getToken())
             return nav("/storage"); 
         }
         return alert('Something went wrong, make sure your information is valid, and try again later.');

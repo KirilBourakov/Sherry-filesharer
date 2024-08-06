@@ -1,5 +1,6 @@
 import { getCookie  } from './cookies';
 
+// TODO: update login function to take a context and save it
 export async function login(username, password){
     const credentials = `${username}:${password}`;
     const encodedCredentials = btoa(credentials);
@@ -30,7 +31,21 @@ export async function logout(){
         clearUser()
         return  Promise.resolve(true)
     }
-    return  Promise.resolve(false)
+    return Promise.resolve(false)
+}
+
+export async function register(username, password){
+    let response = await fetch(`user/auth/register`, { 
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            username: username,
+            password: password,
+        })
+    })
+    return Promise.resolve(response.status)
 }
 
 export async function checkLoginAndRedirect(nav){

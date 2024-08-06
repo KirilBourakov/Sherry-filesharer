@@ -3,7 +3,7 @@ import{ Link, useNavigate } from 'react-router-dom';
 import { createRef, useContext, useState } from 'react';
 import { AuthContext } from '../../components/providers/authProvider'
 import AlertDanger from '../../components/AlertDanger';
-import { login } from './../../scripts/authentication'
+import { login, getToken } from './../../scripts/authentication'
 
 const variants = {
     open: { opacity: 1, x: 0 },
@@ -13,7 +13,7 @@ const variants = {
 export default function LoginForm(){
     const [alertView, changeAlertView] = useState(false);
     const [AlertText, setAlertText] = useState('')
-    const authContext = useContext(AuthContext);
+    const { authObj, setAuthObj } = useContext(AuthContext)
     // TODO: USE THE CONTEXT ABOVE
     const nav = useNavigate();
     
@@ -29,7 +29,7 @@ export default function LoginForm(){
             return
         }
         let response = await login(username, password)
-
+        setAuthObj(getToken())
         if (response.status === 200){
             return nav("/storage"); 
         }

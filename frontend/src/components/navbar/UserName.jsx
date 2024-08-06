@@ -6,6 +6,7 @@ import { getToken, clearUser, logout } from '../../scripts/authentication'
 export default function UserName() {
     const [user, setUser] = useState([])
     const nav = useNavigate()
+    // TODO: rework this component
     useEffect(() =>{
         const getUser = async () =>{
             console.log(getToken().token)
