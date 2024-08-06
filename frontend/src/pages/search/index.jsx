@@ -5,8 +5,8 @@ import Folder from '../../components/folder'
 import File from '../../components/file'
 import Toast from "../../components/toast";
 import { useLocation } from "react-router-dom";
+import { TbFaceIdError } from "react-icons/tb";
 
-// todo: add something that pops up when nothing is found
 export default function Search(){
     const searchSharedWith = useRef();
     const searchPublic = useRef();
@@ -85,7 +85,13 @@ export default function Search(){
             method: 'POST',
             body: JSON.stringify(search)
         })
-        setContent(await response.json())
+        response = await response.json()
+
+        if (response.directories.length === 0 && response.files.length === 0){
+            setContent(undefined)
+            return
+        }
+        setContent(response)
     }
 
     return(
@@ -118,7 +124,13 @@ export default function Search(){
                         <label className="form-check-label mb-0" htmlFor={`searchPublic`} style={{ marginLeft: '5px' }} >Search Public Content</label>
                     </div>
                 </form>
-                {content != null &&
+                {(content !== null && content === undefined) &&
+                    <div className="container text-center">
+                        <TbFaceIdError size={150}/>
+                        <p>No files or directories found</p>
+                    </div>
+                }
+                {(content !== null && content !== undefined) &&
                     <div className="container">
                         <div className='row'>
                             {content.directories &&
