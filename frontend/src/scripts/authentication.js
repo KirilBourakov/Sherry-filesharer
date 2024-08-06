@@ -1,6 +1,5 @@
 import { getCookie  } from './cookies';
 
-// TODO: update login function to take a context and save it
 export async function login(username, password){
     const credentials = `${username}:${password}`;
     const encodedCredentials = btoa(credentials);

@@ -9,7 +9,6 @@ export default function UserName() {
     const { authObj, setAuthObj } = useContext(AuthContext)
     
     const nav = useNavigate()
-    // TODO: rework this component
     useEffect(() =>{
         const getUser = async () =>{
             const response = await fetch(`/user/get`, {

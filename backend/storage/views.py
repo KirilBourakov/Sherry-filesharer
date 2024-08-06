@@ -57,7 +57,6 @@ class SearchAPI(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
-    # TODO: simplify code
     def post(self, request):
         serializer = SearchPayloadSerializer(data = request.data)
         if serializer.is_valid():

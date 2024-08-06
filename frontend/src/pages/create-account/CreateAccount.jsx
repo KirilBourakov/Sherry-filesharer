@@ -18,14 +18,11 @@ export default function CreateAccount() {
     
     //create ref
     const usernameRef = createRef();
-    const emailRef = createRef();
     const passwordRef = createRef();
     const conpassRef = createRef();
 
     const createaccount = async () => {
-        // TODO: use email, or remove it
         const usernameValue = usernameRef.current.value;
-        const emailValue = emailRef.current.value;
         const passwordValue = passwordRef.current.value;
         const conpassValue = conpassRef.current.value;
 
@@ -61,12 +58,6 @@ export default function CreateAccount() {
                 <label htmlFor="username">User Name</label>
                 <input autoComplete='off' type="text" className="form-control" ref={usernameRef} placeholder="User Name"/>
                 
-            </div>
-
-            {/* email */}
-            <div className="form-group">
-                <label htmlFor="email">Email Address (Optional)</label>
-                <input autoComplete='off' type="email" className="form-control" ref={emailRef} placeholder="Enter email"/>
             </div>
 
             {/* password */}
